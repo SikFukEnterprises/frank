@@ -188,29 +188,37 @@ class GroqClient:
         result.setdefault("knowledge_gaps", [])
         return result
 
-    def generate_gap_topics(self, all_summaries: dict) -> list[str]:
+    def generate_gap_topics(self, all_summaries: dict, seed_topic: str = "") -> list[str]:
         """
         When the queue is empty, ask Groq to suggest new research topics
-        based on gaps in existing knowledge.
+        based on gaps in existing knowledge (or from the seed topic if KB is empty).
         Returns list of topic strings.
         """
-        if not all_summaries:
-            return []
-
-        summaries_text = "\n".join(
-            f"[{k}]: {v}" for k, v in list(all_summaries.items())[:20]
-        )
-
         system = (
             "You are a research strategist identifying knowledge gaps. "
             "Always respond in valid JSON only. No preamble or explanation."
         )
-        user = (
-            f"I have researched the following topics:\n{summaries_text}\n\n"
-            f"Based on these findings, suggest {config.MAX_TOPICS_PER_CYCLE} new topics "
-            f"that would meaningfully expand this knowledge base.\n\n"
-            f"Return as JSON matching this schema:\n{_GAP_TOPICS_SCHEMA}"
-        )
+
+        if not all_summaries:
+            # KB is empty — bootstrap from seed topic
+            if not seed_topic:
+                return []
+            user = (
+                f"I am starting research on the topic: '{seed_topic}'\n\n"
+                f"Suggest {config.MAX_TOPICS_PER_CYCLE} specific sub-topics or related areas "
+                f"that would be most valuable to research first.\n\n"
+                f"Return as JSON matching this schema:\n{_GAP_TOPICS_SCHEMA}"
+            )
+        else:
+            summaries_text = "\n".join(
+                f"[{k}]: {v}" for k, v in list(all_summaries.items())[:20]
+            )
+            user = (
+                f"I have researched the following topics:\n{summaries_text}\n\n"
+                f"Based on these findings, suggest {config.MAX_TOPICS_PER_CYCLE} new topics "
+                f"that would meaningfully expand this knowledge base.\n\n"
+                f"Return as JSON matching this schema:\n{_GAP_TOPICS_SCHEMA}"
+            )
 
         result = self._call_json(system, user)
         if result is None:

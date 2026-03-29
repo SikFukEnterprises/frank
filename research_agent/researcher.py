@@ -95,9 +95,10 @@ class ResearchLoop:
         self._log(f"Fetched {len(page_texts)} pages ({total_chars:,} chars)")
 
         if not page_texts:
-            self._log(f"[SKIP] No web content found for '{topic}' — skipping")
-            self._kb.mark_completed(topic)
+            self._log(f"[SKIP] No web content found for '{topic}' — re-queuing with lower priority")
+            self._kb.add_to_queue(topic, priority=4, source_topic=topic_item.get("source_topic", ""))
             self._kb.save()
+            time.sleep(config.SLEEP_BETWEEN_CYCLES)
             return
 
         # Step 3 — Knowledge extraction
@@ -175,8 +176,9 @@ class ResearchLoop:
 
     def _generate_gap_topics(self) -> None:
         all_summaries = self._kb.get_all_summaries()
+        seed = self._kb.get_seed_topic()
         try:
-            topics = self._groq.generate_gap_topics(all_summaries)
+            topics = self._groq.generate_gap_topics(all_summaries, seed_topic=seed)
         except Exception as e:
             self._log(f"[WARN] Gap topic generation failed: {e}")
             return
