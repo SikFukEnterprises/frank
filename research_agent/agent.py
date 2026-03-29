@@ -34,25 +34,45 @@ def _print_banner(resuming: bool, stats: dict) -> None:
     else:
         print(f"  Starting fresh research on: {stats['seed_topic']}")
     print("=" * 60)
-    print("  Type 'quit' to save and exit cleanly.")
+    print("  quit            — save and exit cleanly")
+    print("  add: <topic>    — queue a topic at priority 1")
+    print("  status          — print current stats")
     print("=" * 60)
     print()
 
 
-def _quit_listener(loop: ResearchLoop, research_thread: threading.Thread) -> None:
-    """Runs in main thread — waits for user to type 'quit'."""
+def _quit_listener(loop: ResearchLoop, kb: KnowledgeBase, research_thread: threading.Thread) -> None:
+    """Runs in main thread — handles 'quit' and 'add: <topic>' commands."""
+    print("  Commands: 'quit' | 'add: <topic>' | 'status'\n")
     while True:
         try:
             line = input()
         except EOFError:
-            # stdin closed (e.g. non-interactive); just block until research done
             research_thread.join()
             return
-        if line.strip().lower() == "quit":
+        cmd = line.strip()
+        if cmd.lower() == "quit":
             print("\n[INFO] Quit received — finishing current cycle then shutting down...")
             loop.signal_stop()
             research_thread.join()
             return
+        elif cmd.lower().startswith("add:"):
+            topic = cmd[4:].strip()
+            if topic:
+                kb.add_to_queue(topic, priority=1, source_topic="manual")
+                kb.save()
+                print(f"[INFO] Queued: '{topic}' (priority 1)")
+            else:
+                print("[INFO] Usage: add: <topic>")
+        elif cmd.lower() == "status":
+            stats = kb.get_stats()
+            print(
+                f"[STATUS] Topics done: {stats['topics_researched']} | "
+                f"Queue: {stats['queue_size']} | "
+                f"Facts: {stats['total_facts']}"
+            )
+        elif cmd:
+            print("  Commands: 'quit' | 'add: <topic>' | 'status'")
 
 
 def main() -> None:
@@ -83,7 +103,7 @@ def main() -> None:
     research_thread.start()
 
     try:
-        _quit_listener(loop, research_thread)
+        _quit_listener(loop, kb, research_thread)
     except KeyboardInterrupt:
         print("\n[INFO] Interrupted — finishing current cycle then shutting down...")
         loop.signal_stop()
