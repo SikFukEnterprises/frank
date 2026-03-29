@@ -1,5 +1,5 @@
 groq
-duckduckgo_search
+ddgs
 requests
 beautifulsoup4
 lxml
