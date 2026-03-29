@@ -6,7 +6,7 @@ import config
 
 _STRIP_TAGS = ["script", "style", "nav", "header", "footer", "aside", "form", "noscript"]
 _FETCH_TIMEOUT = 10
-_PAGES_TO_FETCH = 3
+_PAGES_TO_FETCH = 2
 _HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "

@@ -160,9 +160,9 @@ class GroqClient:
         if not related_knowledge:
             return {"connections": [], "contradictions": [], "knowledge_gaps": []}
 
-        facts_text = "\n".join(f"- {f.get('content', '')}" for f in new_facts[:20])
+        facts_text = "\n".join(f"- {f.get('content', '')}" for f in new_facts[:8])
         related_text = "\n".join(
-            f"[{k}]: {v}" for k, v in list(related_knowledge.items())[:15]
+            f"[{k}]: {v}" for k, v in list(related_knowledge.items())[:5]
         )
 
         system = (
@@ -211,7 +211,7 @@ class GroqClient:
             )
         else:
             summaries_text = "\n".join(
-                f"[{k}]: {v}" for k, v in list(all_summaries.items())[:20]
+                f"[{k}]: {v}" for k, v in list(all_summaries.items())[:8]
             )
             user = (
                 f"I have researched the following topics:\n{summaries_text}\n\n"
