@@ -1,0 +1,5 @@
+groq
+duckduckgo_search
+requests
+beautifulsoup4
+lxml

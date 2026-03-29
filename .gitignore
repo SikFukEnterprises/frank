@@ -1,0 +1,10 @@
+research_agent/data/
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+.env
+*.egg-info/
+dist/
+build/
