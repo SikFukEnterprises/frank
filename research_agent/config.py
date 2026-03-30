@@ -1,7 +1,7 @@
 import os
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "your_key_here")
-MODEL = "llama-3.3-70b-versatile"
+MODEL = "llama-3.1-8b-instant"
 MAX_TOKENS = 1024
 TEMPERATURE = 0.3
 RATE_LIMIT_RPM = 20
