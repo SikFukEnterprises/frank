@@ -123,18 +123,19 @@ class GroqClient:
 
         system = (
             "You are a research assistant extracting structured knowledge. "
-            "Always respond in valid JSON only. No preamble or explanation."
+            "Always respond in valid JSON only. No preamble or explanation.\n\n"
+            f"{config.RESEARCH_FOCUS}"
         )
         user = (
             f"Topic: {topic}\n\n"
             f"Existing knowledge on this topic: {existing_summary or 'None'}\n\n"
             f"New source material:\n{combined_pages}\n\n"
             f"Current timestamp: {now}\n\n"
-            f"Extract:\n"
+            f"Extract only facts relevant to the research focus above:\n"
             f"1. Key facts (with confidence high/medium/low, include source_url and added_at)\n"
             f"2. Conflicts with existing knowledge\n"
-            f"3. 3-5 follow-up research topics this raises\n"
-            f"4. A concise summary of findings\n"
+            f"3. 3-5 follow-up research topics directly related to CAN/OBD2 data\n"
+            f"4. A concise summary of on-topic findings only\n"
             f"5. Related topics already in my knowledge base\n\n"
             f"Return as JSON matching this schema:\n{_EXTRACTION_SCHEMA}"
         )
@@ -167,7 +168,8 @@ class GroqClient:
 
         system = (
             "You are a research analyst identifying connections between pieces of knowledge. "
-            "Always respond in valid JSON only. No preamble or explanation."
+            "Always respond in valid JSON only. No preamble or explanation.\n\n"
+            f"{config.RESEARCH_FOCUS}"
         )
         user = (
             f"New facts about '{topic}':\n{facts_text}\n\n"
@@ -175,7 +177,7 @@ class GroqClient:
             f"Identify:\n"
             f"1. Connections between the new facts and existing knowledge\n"
             f"2. Contradictions between new and existing knowledge\n"
-            f"3. Knowledge gaps that should be researched next\n\n"
+            f"3. Knowledge gaps about CAN/OBD2 data that should be researched next\n\n"
             f"Return as JSON matching this schema:\n{_CROSS_REF_SCHEMA}"
         )
 
@@ -196,7 +198,8 @@ class GroqClient:
         """
         system = (
             "You are a research strategist identifying knowledge gaps. "
-            "Always respond in valid JSON only. No preamble or explanation."
+            "Always respond in valid JSON only. No preamble or explanation.\n\n"
+            f"{config.RESEARCH_FOCUS}"
         )
 
         if not all_summaries:
@@ -205,7 +208,7 @@ class GroqClient:
                 return []
             user = (
                 f"I am starting research on the topic: '{seed_topic}'\n\n"
-                f"Suggest {config.MAX_TOPICS_PER_CYCLE} specific sub-topics or related areas "
+                f"Suggest {config.MAX_TOPICS_PER_CYCLE} specific CAN/OBD2-focused sub-topics "
                 f"that would be most valuable to research first.\n\n"
                 f"Return as JSON matching this schema:\n{_GAP_TOPICS_SCHEMA}"
             )
@@ -215,8 +218,9 @@ class GroqClient:
             )
             user = (
                 f"I have researched the following topics:\n{summaries_text}\n\n"
-                f"Based on these findings, suggest {config.MAX_TOPICS_PER_CYCLE} new topics "
-                f"that would meaningfully expand this knowledge base.\n\n"
+                f"Suggest {config.MAX_TOPICS_PER_CYCLE} new topics strictly about CAN frame data, "
+                f"OBD2 PIDs, SSM protocol, or related hardware/software that would expand "
+                f"this knowledge base.\n\n"
                 f"Return as JSON matching this schema:\n{_GAP_TOPICS_SCHEMA}"
             )
 
