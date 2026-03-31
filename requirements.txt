@@ -3,3 +3,4 @@ ddgs
 requests
 beautifulsoup4
 lxml
+rich

@@ -4,122 +4,517 @@ Autonomous Research Agent — entry point.
 
 Usage:
     python agent.py
-
-On first run you will be prompted for a seed topic.
-On subsequent runs the agent resumes from the saved knowledge base.
-Type 'quit' at any time to save and exit cleanly.
 """
 
+import json
+import os
 import sys
 import threading
 
 import config
+import ui
 from groq_client import GroqClient
 from knowledge_base import KnowledgeBase
 from researcher import ResearchLoop
+import sessions as session_manager
 from web_search import WebSearcher
 
 
-def _print_banner(resuming: bool, stats: dict) -> None:
-    print("=" * 60)
-    print("  Autonomous Research Agent")
-    print("=" * 60)
-    if resuming:
-        print(
-            f"  Resuming research on: {stats['seed_topic']}\n"
-            f"  Topics completed : {stats['topics_researched']}\n"
-            f"  Queue size       : {stats['queue_size']}\n"
-            f"  Facts collected  : {stats['total_facts']}"
-        )
-    else:
-        print(f"  Starting fresh research on: {stats['seed_topic']}")
-    print("=" * 60)
-    print("  quit            — save and exit cleanly")
-    print("  add: <topic>    — queue a topic at priority 1")
-    print("  status          — print current stats")
-    print("=" * 60)
-    print()
+# ── Export / Import helpers ────────────────────────────────────────────────────
+
+def _export_session(kb: KnowledgeBase, session: dict) -> None:
+    """Export all facts to JSON and Markdown files in the session directory."""
+    data = kb._data
+    knowledge = data.get("knowledge", {})
+    session_dir = session["dir"]
+
+    # ── JSON export ──────────────────────────────────────────────────────
+    export_json = os.path.join(session_dir, "export.json")
+    payload = {
+        "session": session["name"],
+        "seed_topic": data.get("meta", {}).get("seed_topic", ""),
+        "exported_at": __import__("datetime").datetime.utcnow().isoformat(),
+        "topics": {},
+    }
+    for key, entry in knowledge.items():
+        payload["topics"][key] = {
+            "summary": entry.get("summary", ""),
+            "facts": [
+                {
+                    "content":       f.get("content", ""),
+                    "confidence":    f.get("confidence", ""),
+                    "source_count":  f.get("source_count", 1),
+                    "source_url":    f.get("source_url", ""),
+                }
+                for f in entry.get("facts", [])
+            ],
+            "conflicts": entry.get("conflicts", []),
+        }
+    with open(export_json, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, indent=2, ensure_ascii=False)
+
+    # ── Markdown export ──────────────────────────────────────────────────
+    export_md = os.path.join(session_dir, "export.md")
+    lines = [
+        f"# {session['name']}",
+        f"**Seed topic:** {payload['seed_topic']}  ",
+        f"**Exported:** {payload['exported_at']}",
+        "",
+    ]
+    for key, entry in sorted(knowledge.items()):
+        facts = entry.get("facts", [])
+        if not facts:
+            continue
+        lines.append(f"## {key}")
+        if entry.get("summary"):
+            lines.append(f"*{entry['summary']}*")
+            lines.append("")
+        for f in facts:
+            conf = f.get("confidence", "?")[0].upper()
+            sc = f.get("source_count", 1)
+            src_tag = f" (×{sc})" if sc > 1 else ""
+            lines.append(f"- [{conf}]{src_tag} {f.get('content', '')}")
+        for c in entry.get("conflicts", []):
+            lines.append(f"- ⚠ **Conflict:** {c.get('note', '')}")
+        lines.append("")
+
+    with open(export_md, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines))
+
+    ui.log("ok", f"Exported → [cyan]{export_json}[/cyan]")
+    ui.log("ok", f"Exported → [cyan]{export_md}[/cyan]")
 
 
-def _quit_listener(loop: ResearchLoop, kb: KnowledgeBase, research_thread: threading.Thread) -> None:
-    """Runs in main thread — handles 'quit' and 'add: <topic>' commands."""
-    print("  Commands: 'quit' | 'add: <topic>' | 'status'\n")
+def _import_facts(kb: KnowledgeBase, path: str) -> None:
+    """Import facts from a previously exported JSON file into the live KB."""
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+    except (OSError, json.JSONDecodeError) as e:
+        ui.log("error", f"Could not read import file: {e}")
+        return
+
+    topics = payload.get("topics", {})
+    imported = 0
+    for key, entry in topics.items():
+        for fact in entry.get("facts", []):
+            content = fact.get("content", "").strip()
+            if not content:
+                continue
+            # Inject as a minimal extracted dict so update_topic handles it
+            synthetic = {
+                "_model_rank": 4,   # treat as lowest rank (weakest claim)
+                "summary": "",
+                "facts": [fact],
+                "conflicts": [],
+                "follow_up_topics": [],
+                "related_topics": [],
+            }
+            kb.update_topic(key, synthetic)
+            imported += 1
+
+    kb.save()
+    ui.log("ok", f"Imported {imported} facts from [cyan]{path}[/cyan]")
+
+
+# ── Research command loop ──────────────────────────────────────────────────────
+
+def _help_str() -> str:
+    n = len(config.MODEL_CATALOG)
+    return (
+        "[dim]Commands:[/dim]  "
+        "[cyan]menu[/cyan]  │  "
+        "[cyan]add: <topic>[/cyan]  │  "
+        "[cyan]remove: <topic>[/cyan]  │  "
+        "[cyan]pause[/cyan] / [cyan]resume[/cyan]  │  "
+        "[cyan]speed <tier>[/cyan]  │  "
+        f"[cyan]model <1-{n}>[/cyan]  │  "
+        "[cyan]queue[/cyan]  │  "
+        "[cyan]status[/cyan]  │  "
+        "[cyan]report[/cyan]  │  "
+        "[cyan]synthesize[/cyan]  │  "
+        "[cyan]export[/cyan]  │  "
+        "[cyan]quit[/cyan]"
+    )
+
+
+def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
+                  session: dict, display: ui.LiveDisplay,
+                  research_thread: threading.Thread) -> str:
+    """
+    Main thread — handles commands while research runs in background.
+    Returns 'menu' or 'quit'.
+    """
+    ui.console.print(_help_str() + "\n")
+
     while True:
         try:
             line = input()
         except EOFError:
-            research_thread.join()
-            return
-        cmd = line.strip()
-        if cmd.lower() == "quit":
-            print("\n[INFO] Quit received — finishing current cycle then shutting down...")
             loop.signal_stop()
             research_thread.join()
-            return
-        elif cmd.lower().startswith("add:"):
-            topic = cmd[4:].strip()
+            display.stop()
+            return "quit"
+
+        raw = line.strip()
+        cmd = raw.lower()
+
+        # ── Navigation ────────────────────────────────────────────────────
+        if cmd == "quit":
+            display.stop()
+            ui.log("info", "Shutting down after current cycle...")
+            loop.signal_stop()
+            research_thread.join()
+            return "quit"
+
+        elif cmd == "menu":
+            display.stop()
+            ui.log("info", "Pausing after current cycle — returning to menu...")
+            loop.signal_stop()
+            research_thread.join()
+            return "menu"
+
+        # ── Queue manipulation ────────────────────────────────────────────
+        elif cmd.startswith("add:"):
+            topic = raw[4:].strip()
             if topic:
                 kb.add_to_queue(topic, priority=1, source_topic="manual")
                 kb.save()
-                print(f"[INFO] Queued: '{topic}' (priority 1)")
+                ui.log("ok", f"Queued: '[bold]{topic}[/bold]' (priority 1)")
+                display.update(queue=kb.queue_size())
             else:
-                print("[INFO] Usage: add: <topic>")
-        elif cmd.lower() == "status":
+                ui.console.print("  Usage: [cyan]add: <topic>[/cyan]")
+
+        elif cmd.startswith("remove:"):
+            topic = raw[7:].strip()
+            if topic:
+                removed = kb.remove_from_queue(topic)
+                if removed:
+                    kb.save()
+                    ui.log("ok", f"Removed '[bold]{topic}[/bold]' from queue")
+                    display.update(queue=kb.queue_size())
+                else:
+                    ui.log("warn", f"'{topic}' not found in queue")
+            else:
+                ui.console.print("  Usage: [cyan]remove: <topic>[/cyan]")
+
+        # ── Pause / Resume ────────────────────────────────────────────────
+        elif cmd == "pause":
+            loop.pause()
+            display.update(paused=True)
+
+        elif cmd == "resume":
+            loop.resume()
+            display.update(paused=False)
+
+        # ── Speed tier ────────────────────────────────────────────────────
+        elif cmd.startswith("speed"):
+            parts = cmd.split()
+            tier_name = parts[1] if len(parts) > 1 else ""
+            if tier_name in config.SPEED_TIERS:
+                config.apply_speed_tier(tier_name)
+                ui.log("ok", f"Speed tier → [cyan]{tier_name}[/cyan]")
+                display.update(tier=tier_name)
+            else:
+                ui.console.print(
+                    f"  Valid tiers: {', '.join(config.SPEED_TIERS.keys())}"
+                )
+
+        # ── Model switch ──────────────────────────────────────────────────
+        elif cmd.startswith("model"):
+            parts = cmd.split()
+            try:
+                idx = int(parts[1]) - 1
+                if 0 <= idx < len(config.MODEL_CATALOG):
+                    groq.set_preferred_model(idx)
+                    name = config.MODEL_CATALOG[idx]["short"]
+                    ui.log("ok", f"Model → [yellow]{name}[/yellow]")
+                    display.update(model=name)
+                else:
+                    ui.console.print(f"  Valid range: 1-{len(config.MODEL_CATALOG)}")
+            except (IndexError, ValueError):
+                n = len(config.MODEL_CATALOG)
+                ui.console.print(f"  Usage: [cyan]model <1-{n}>[/cyan]")
+
+        # ── Reporting ─────────────────────────────────────────────────────
+        elif cmd == "queue":
+            import report as report_module
+            report_module.render_queue(kb._data)
+
+        elif cmd == "status":
             stats = kb.get_stats()
-            print(
-                f"[STATUS] Topics done: {stats['topics_researched']} | "
-                f"Queue: {stats['queue_size']} | "
-                f"Facts: {stats['total_facts']}"
+            ui.print_status(
+                stats,
+                token_stats=groq.get_usage_stats(),
+                tier=config.CURRENT_SPEED_TIER,
+                current_topic=loop.get_current_topic(),
+                model_name=groq.get_active_model_name(),
             )
+
+        elif cmd == "report":
+            ui.log("info", "Generating report...")
+            try:
+                import report as report_module
+                report_module.generate(kb)
+            except Exception as e:
+                ui.log("error", f"Report failed: {e}")
+
+        elif cmd == "synthesize":
+            ui.log("info", "Synthesizing report with best available model...")
+            try:
+                import report as report_module
+                report_module.generate_synthesized(kb, groq)
+            except Exception as e:
+                ui.log("error", f"Synthesis failed: {e}")
+
+        # ── Export / Import ───────────────────────────────────────────────
+        elif cmd == "export":
+            _export_session(kb, session)
+
+        elif cmd.startswith("import"):
+            parts = raw.split(None, 1)
+            if len(parts) < 2:
+                ui.console.print("  Usage: [cyan]import <path/to/export.json>[/cyan]")
+            else:
+                _import_facts(kb, parts[1])
+                display.update(facts=kb.get_stats()["total_facts"])
+
+        elif cmd in ("help", "?", "h"):
+            ui.console.print(_help_str())
+
         elif cmd:
-            print("  Commands: 'quit' | 'add: <topic>' | 'status'")
+            ui.console.print(f"  [dim]Unknown command.[/dim]  Type [cyan]help[/cyan] for all options.")
 
 
-def main() -> None:
+# ── Priority queue seeding ─────────────────────────────────────────────────────
+
+def _seed_priority_topics(kb: KnowledgeBase, focus: str) -> int:
+    """
+    Parse any PRIORITY QUEUE: line from the research focus and add those topics
+    to the queue at priority 1 (highest), skipping already-completed topics.
+
+    Format in research focus:
+        PRIORITY QUEUE: topic one | topic two | topic three
+
+    Returns the number of topics seeded.
+    """
+    import re
+    match = re.search(r"PRIORITY QUEUE\s*:\s*(.+?)(?:\n|$)", focus, re.IGNORECASE)
+    if not match:
+        return 0
+
+    raw = match.group(1)
+    topics = [t.strip() for t in raw.split("|") if t.strip()]
+    completed = set(kb._data.get("knowledge", {}).keys())
+    seeded = 0
+    for topic in topics:
+        key = topic.lower().strip()
+        if key not in completed:
+            kb.add_to_queue(topic, priority=1, source_topic="focus_directive")
+            seeded += 1
+
+    if seeded:
+        kb.save()
+        ui.log("ok", f"Seeded [bold]{seeded}[/bold] priority topic(s) from research focus")
+    return seeded
+
+
+# ── Research section ───────────────────────────────────────────────────────────
+
+def run_research() -> str:
+    """Session → model → tier → research loop. Returns 'menu' or 'quit'."""
+    migrated = session_manager.migrate_legacy_session()
+    existing = session_manager.list_sessions()
+
+    if migrated:
+        chosen = migrated
+    else:
+        chosen = session_manager.prompt_session_choice(existing)
+
+    session_manager.activate_session(chosen)
+
     kb = KnowledgeBase()
     resuming = kb.load()
-
     if not resuming:
-        # Fresh start — prompt for seed topic
-        print("No existing knowledge base found.")
-        try:
-            seed = input("Enter a seed topic to research: ").strip()
-        except (EOFError, KeyboardInterrupt):
-            print("\nNo seed topic provided. Exiting.")
-            sys.exit(0)
-        if not seed:
-            print("Seed topic cannot be empty. Exiting.")
-            sys.exit(1)
-        kb.init_fresh(seed)
+        kb.init_fresh(chosen["seed_topic"])
+
+    # Always re-seed priority topics — skips already-completed ones automatically
+    _seed_priority_topics(kb, config.RESEARCH_FOCUS)
 
     stats = kb.get_stats()
-    _print_banner(resuming, stats)
+
+    model_idx = ui.select_model()
+    config.set_active_model_index(model_idx)
+
+    tier = ui.select_speed_tier(stats["queue_size"])
+
+    ui.print_banner(
+        session_name=chosen["name"],
+        seed_topic=stats["seed_topic"],
+        tier=tier,
+        stats=stats,
+        resuming=resuming,
+        model_name=config.MODEL_CATALOG[model_idx]["short"],
+    )
 
     searcher = WebSearcher()
-    groq = GroqClient()
-    loop = ResearchLoop(kb, searcher, groq)
+    groq     = GroqClient()
+    loop     = ResearchLoop(kb, searcher, groq)
+
+    # Start live display
+    display = ui.LiveDisplay(initial_queue=stats["queue_size"])
+    display.update(
+        done=stats["topics_researched"],
+        facts=stats["total_facts"],
+        model=config.MODEL_CATALOG[model_idx]["short"],
+        tier=tier,
+    )
+    display.start()
+
+    # Patch the research loop to push stats to the live display after each cycle
+    _orig_log = loop._log
+
+    def _patched_log(msg: str, level: str = "info") -> None:
+        _orig_log(msg, level)
+        s = kb.get_stats()
+        display.update(
+            topic=loop.get_current_topic(),
+            done=s["topics_researched"],
+            queue=s["queue_size"],
+            facts=s["total_facts"],
+            model=groq.get_active_model_name(),
+            tokens=groq.get_usage_stats()["tokens_used"],
+            calls=groq.get_usage_stats()["calls_made"],
+        )
+
+    loop._log = _patched_log
 
     research_thread = threading.Thread(target=loop.run, name="research-loop", daemon=True)
     research_thread.start()
 
     try:
-        _quit_listener(loop, kb, research_thread)
+        result = _command_loop(loop, kb, groq, chosen, display, research_thread)
     except KeyboardInterrupt:
-        print("\n[INFO] Interrupted — finishing current cycle then shutting down...")
+        display.stop()
+        ui.log("info", "Interrupted — finishing current cycle...")
         loop.signal_stop()
         research_thread.join()
+        result = "menu"
 
-    # Final save and stats
+    # Final save and summary
     kb.save()
-    final_stats = kb.get_stats()
-    print()
-    print("=" * 60)
-    print("  Research session complete.")
-    print(f"  Topics researched : {final_stats['topics_researched']}")
-    print(f"  Facts collected   : {final_stats['total_facts']}")
-    print(f"  Queue remaining   : {final_stats['queue_size']}")
-    print(f"  Knowledge saved to: {config.KNOWLEDGE_FILE}")
-    print("=" * 60)
+    final_stats  = kb.get_stats()
+    token_stats  = groq.get_usage_stats()
+
+    from rich.panel import Panel
+    from rich.table import Table
+    from rich import box
+
+    t = Table(box=None, show_header=False, pad_edge=False, padding=(0, 2))
+    t.add_column(style="bold cyan")
+    t.add_column()
+    t.add_row("Session",           chosen["name"])
+    t.add_row("Topics researched", str(final_stats["topics_researched"]))
+    t.add_row("Facts collected",   str(final_stats["total_facts"]))
+    t.add_row("Queue remaining",   str(final_stats["queue_size"]))
+    t.add_row("API calls",         str(token_stats["calls_made"]))
+    t.add_row("Tokens used",       f"{token_stats['tokens_used']:,}")
+    t.add_row("Saved to",          config.KNOWLEDGE_FILE)
+    ui.console.print()
+    ui.console.print(Panel(t, title="[bold cyan]Session Paused[/bold cyan]",
+                           border_style="cyan", padding=(0, 1)))
+    ui.console.print()
+
+    return result
+
+
+# ── Reports section ────────────────────────────────────────────────────────────
+
+def run_reports() -> str:
+    """Interactive report browser. Returns 'menu' when done."""
+    import report as report_module
+    from rich.prompt import Prompt
+    from rich import box
+    from rich.panel import Panel
+    from rich.table import Table
+
+    existing = session_manager.list_sessions()
+    if not existing:
+        ui.console.print("\n  [dim]No sessions found. Run Research first.[/dim]\n")
+        return "menu"
+
+    if len(existing) == 1:
+        session = existing[0]
+    else:
+        session_manager.print_session_list(existing)
+        choices = [str(i) for i in range(1, len(existing) + 1)]
+        choice = Prompt.ask("  [cyan]Select session[/cyan]", choices=choices, default="1")
+        session = existing[int(choice) - 1]
+
+    session_manager.activate_session(session)
+
+    kb = KnowledgeBase()
+    if not kb.load():
+        ui.console.print("\n  [dim]No knowledge base found for that session.[/dim]\n")
+        return "menu"
+
+    while True:
+        ui.console.print()
+        tbl = Table(box=box.SIMPLE, show_header=False, pad_edge=False, padding=(0, 3))
+        tbl.add_column(style="bold cyan", width=3)
+        tbl.add_column(style="bold", width=14)
+        tbl.add_column(style="dim")
+        tbl.add_row("1", "Synthesize",  "AI-generated narrative report (best model)")
+        tbl.add_row("2", "Full report", "All topics with facts and summaries")
+        tbl.add_row("3", "Facts only",  "Compact flat list of all facts")
+        tbl.add_row("4", "Queue",       "Pending research topics")
+        tbl.add_row("5", "Export",      "Export to JSON + Markdown files")
+        tbl.add_row("6", "Back",        "Return to main menu")
+
+        ui.console.print(Panel(
+            tbl,
+            title=f"[bold cyan]Reports[/bold cyan]  [dim]{session['name']}[/dim]",
+            border_style="cyan",
+            padding=(0, 1),
+        ))
+
+        r = Prompt.ask("  [cyan]Select[/cyan]",
+                       choices=["1", "2", "3", "4", "5", "6"], default="1")
+
+        if r == "1":
+            groq = GroqClient()
+            report_module.generate_synthesized(kb, groq)
+        elif r == "2":
+            report_module.generate(kb)
+        elif r == "3":
+            report_module.render_facts_only(kb._data)
+        elif r == "4":
+            report_module.render_queue(kb._data)
+        elif r == "5":
+            _export_session(kb, session)
+        elif r == "6":
+            return "menu"
+
+
+# ── Main loop ──────────────────────────────────────────────────────────────────
+
+def main() -> None:
+    while True:
+        action = ui.print_main_menu()
+
+        if action == "quit":
+            ui.console.print("\n  [dim]Goodbye.[/dim]\n")
+            break
+        elif action == "research":
+            result = run_research()
+            if result == "quit":
+                ui.console.print("\n  [dim]Goodbye.[/dim]\n")
+                break
+        elif action == "reports":
+            result = run_reports()
+            if result == "quit":
+                ui.console.print("\n  [dim]Goodbye.[/dim]\n")
+                break
 
 
 if __name__ == "__main__":
