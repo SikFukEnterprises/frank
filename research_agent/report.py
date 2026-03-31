@@ -18,6 +18,7 @@ Usage (from agent.py command loop):
 import argparse
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -262,6 +263,152 @@ def generate(kb) -> None:
     for key in sorted(knowledge.keys()):
         render_topic(key, knowledge[key])
     render_queue(data)
+
+
+def export_obsidian(kb, output_dir: str) -> int:
+    """
+    Export the knowledge base as an Obsidian vault — one .md file per topic
+    with [[wikilinks]] between related topics. Returns count of files written.
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    data = kb._data
+    knowledge = data.get("knowledge", {})
+    if not knowledge:
+        console.print("[dim]  Nothing to export.[/dim]")
+        return 0
+
+    # Index page
+    meta = data.get("meta", {})
+    index_lines = [
+        f"# {meta.get('seed_topic', 'Research Notes')}",
+        "",
+        f"**Topics researched:** {meta.get('topics_researched', 0)}  ",
+        f"**Total facts:** {meta.get('total_facts', 0)}  ",
+        f"**Last updated:** {meta.get('last_updated', '')[:19]}",
+        "",
+        "## Topics",
+        "",
+    ]
+    for key in sorted(knowledge.keys()):
+        facts_count = len(knowledge[key].get("facts", []))
+        index_lines.append(f"- [[{key}]] ({facts_count} facts)")
+
+    with open(os.path.join(output_dir, "INDEX.md"), "w", encoding="utf-8") as f:
+        f.write("\n".join(index_lines))
+
+    count = 1
+    for key, entry in knowledge.items():
+        lines = [f"# {key}", ""]
+        summary = entry.get("summary", "").strip()
+        if summary:
+            lines += [f"> {summary}", ""]
+
+        facts = entry.get("facts", [])
+        if facts:
+            lines += ["## Facts", ""]
+            for fact in facts:
+                conf = fact.get("confidence", "low")[0].upper()
+                sc = fact.get("source_count", 1)
+                src = fact.get("source_url", "")
+                src_tag = f" ([source]({src}))" if src else ""
+                verified = " ✅" if fact.get("hardware_verified") else ""
+                lines.append(f"- `[{conf}]`{'×'+str(sc) if sc>1 else ''}{verified} {fact.get('content','')}{src_tag}")
+            lines.append("")
+
+        conflicts = entry.get("conflicts", [])
+        if conflicts:
+            lines += ["## Conflicts", ""]
+            for c in conflicts:
+                lines.append(f"- ⚠ {c.get('note', '')}")
+            lines.append("")
+
+        related = entry.get("related_topics", [])
+        if related:
+            lines += ["## Related", ""]
+            for r in related:
+                lines.append(f"- [[{r}]]")
+            lines.append("")
+
+        lines.append(f"*Researched {entry.get('research_count', 0)}× — last {entry.get('last_researched', '')[:10]}*")
+
+        safe_name = re.sub(r'[\\/:*?"<>|]', "_", key)
+        with open(os.path.join(output_dir, f"{safe_name}.md"), "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
+        count += 1
+
+    console.print(f"[green]Obsidian vault exported:[/green] {output_dir}  ({count} files)")
+    return count
+
+
+def export_csv(kb, output_path: str) -> int:
+    """
+    Export all facts as a CSV file with columns:
+    topic, fact, confidence, source_count, source_url, hardware_verified, needs_verification
+    Returns count of rows written.
+    """
+    import csv
+    data = kb._data
+    knowledge = data.get("knowledge", {})
+    rows = []
+    for key, entry in knowledge.items():
+        for fact in entry.get("facts", []):
+            rows.append({
+                "topic":               key,
+                "fact":                fact.get("content", ""),
+                "confidence":          fact.get("confidence", ""),
+                "source_count":        fact.get("source_count", 1),
+                "source_url":          fact.get("source_url", ""),
+                "source_quality":      fact.get("source_quality", ""),
+                "hardware_verified":   fact.get("hardware_verified", False),
+                "needs_verification":  fact.get("needs_verification", False),
+                "model_rank":          fact.get("model_rank", ""),
+            })
+
+    if not rows:
+        console.print("[dim]  No facts to export.[/dim]")
+        return 0
+
+    fieldnames = list(rows[0].keys())
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    console.print(f"[green]CSV exported:[/green] {output_path}  ({len(rows)} facts)")
+    return len(rows)
+
+
+def generate_auto_digest(kb, groq_client, output_path: str | None = None) -> str:
+    """
+    Generate and save an auto-digest (timestamped synthesis report).
+    If output_path is None, saves to the session dir as digest_YYYYMMDD_HHMMSS.md.
+    Returns the path written.
+    """
+    from datetime import datetime, timezone
+    data = kb._data
+    seed_topic = data.get("meta", {}).get("seed_topic", "")
+    if not data.get("knowledge"):
+        return ""
+
+    console.print("[dim]  Generating auto-digest...[/dim]")
+    text = groq_client.generate_synthesis_report(data, seed_topic, config.RESEARCH_FOCUS)
+
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    if output_path is None:
+        session_dir = os.path.dirname(config.KNOWLEDGE_FILE)
+        output_path = os.path.join(session_dir, f"digest_{ts}.md")
+
+    header = (
+        f"# Auto-Digest — {seed_topic}\n"
+        f"*Generated: {ts}  |  "
+        f"Topics: {data['meta'].get('topics_researched',0)}  |  "
+        f"Facts: {data['meta'].get('total_facts',0)}*\n\n"
+    )
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(header + text)
+
+    console.print(f"[green]Digest saved:[/green] {output_path}")
+    return output_path
 
 
 def generate_synthesized(kb, groq_client) -> None:

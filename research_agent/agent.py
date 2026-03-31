@@ -122,25 +122,30 @@ def _import_facts(kb: KnowledgeBase, path: str) -> None:
 def _help_str() -> str:
     n = len(config.MODEL_CATALOG)
     return (
-        "[dim]Commands:[/dim]  "
-        "[cyan]menu[/cyan]  │  "
-        "[cyan]add: <topic>[/cyan]  │  "
-        "[cyan]remove: <topic>[/cyan]  │  "
-        "[cyan]pause[/cyan] / [cyan]resume[/cyan]  │  "
-        "[cyan]speed <tier>[/cyan]  │  "
-        f"[cyan]model <1-{n}>[/cyan]  │  "
-        "[cyan]queue[/cyan]  │  "
-        "[cyan]status[/cyan]  │  "
-        "[cyan]report[/cyan]  │  "
-        "[cyan]synthesize[/cyan]  │  "
-        "[cyan]export[/cyan]  │  "
-        "[cyan]quit[/cyan]"
+        "[dim]Commands:[/dim]\n"
+        "  [bold cyan]Research:[/bold cyan]  "
+        "[cyan]add: <topic>[/cyan]  [cyan]remove: <topic>[/cyan]  "
+        "[cyan]pause[/cyan] / [cyan]resume[/cyan]  "
+        f"[cyan]speed <tier>[/cyan]  [cyan]model <1-{n}>[/cyan]  "
+        "[cyan]lanes <1-3>[/cyan]\n"
+        "  [bold cyan]Reports:[/bold cyan]   "
+        "[cyan]queue[/cyan]  [cyan]status[/cyan]  [cyan]report[/cyan]  "
+        "[cyan]synthesize[/cyan]  [cyan]tree[/cyan]  [cyan]diff[/cyan]\n"
+        "  [bold cyan]Knowledge:[/bold cyan] "
+        "[cyan]objectives[/cyan]  [cyan]hypothesis add <text>[/cyan]  "
+        "[cyan]hypothesis list[/cyan]  [cyan]similar <query>[/cyan]\n"
+        "  [bold cyan]Export:[/bold cyan]    "
+        "[cyan]export[/cyan]  [cyan]obsidian[/cyan]  [cyan]csv[/cyan]  "
+        "[cyan]import <path>[/cyan]  [cyan]romraider[/cyan]\n"
+        "  [bold cyan]Nav:[/bold cyan]       "
+        "[cyan]plan[/cyan]  [cyan]webui[/cyan]  [cyan]menu[/cyan]  [cyan]quit[/cyan]"
     )
 
 
 def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
                   session: dict, display: ui.LiveDisplay,
-                  research_thread: threading.Thread) -> str:
+                  research_thread: threading.Thread,
+                  extra_loops: list | None = None) -> str:
     """
     Main thread — handles commands while research runs in background.
     Returns 'menu' or 'quit'.
@@ -164,6 +169,8 @@ def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
             display.stop()
             ui.log("info", "Shutting down after current cycle...")
             loop.signal_stop()
+            for el in (extra_loops or []):
+                el.signal_stop()
             research_thread.join()
             return "quit"
 
@@ -171,6 +178,8 @@ def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
             display.stop()
             ui.log("info", "Pausing after current cycle — returning to menu...")
             loop.signal_stop()
+            for el in (extra_loops or []):
+                el.signal_stop()
             research_thread.join()
             return "menu"
 
@@ -201,10 +210,14 @@ def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
         # ── Pause / Resume ────────────────────────────────────────────────
         elif cmd == "pause":
             loop.pause()
+            for el in (extra_loops or []):
+                el.pause()
             display.update(paused=True)
 
         elif cmd == "resume":
             loop.resume()
+            for el in (extra_loops or []):
+                el.resume()
             display.update(paused=False)
 
         # ── Speed tier ────────────────────────────────────────────────────
@@ -216,9 +229,7 @@ def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
                 ui.log("ok", f"Speed tier → [cyan]{tier_name}[/cyan]")
                 display.update(tier=tier_name)
             else:
-                ui.console.print(
-                    f"  Valid tiers: {', '.join(config.SPEED_TIERS.keys())}"
-                )
+                ui.console.print(f"  Valid tiers: {', '.join(config.SPEED_TIERS.keys())}")
 
         # ── Model switch ──────────────────────────────────────────────────
         elif cmd.startswith("model"):
@@ -235,6 +246,32 @@ def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
             except (IndexError, ValueError):
                 n = len(config.MODEL_CATALOG)
                 ui.console.print(f"  Usage: [cyan]model <1-{n}>[/cyan]")
+
+        # ── Lane count ────────────────────────────────────────────────────
+        elif cmd.startswith("lanes"):
+            parts = cmd.split()
+            try:
+                n = int(parts[1])
+                if 1 <= n <= 3:
+                    config.RESEARCH_LANES = n
+                    ui.log("ok", f"Lane count → {n} (restarts on next session)")
+                    display.update(lanes=n)
+                else:
+                    ui.console.print("  Valid: lanes 1, lanes 2, lanes 3")
+            except (IndexError, ValueError):
+                ui.console.print("  Usage: [cyan]lanes <1-3>[/cyan]")
+
+        # ── Research plan ─────────────────────────────────────────────────
+        elif cmd == "plan":
+            ui.log("info", "Generating research plan from seed topic...")
+            try:
+                from researcher import seed_from_plan
+                added = seed_from_plan(kb, groq)
+                display.update(queue=kb.queue_size())
+                if added == 0:
+                    ui.log("warn", "No plan topics generated")
+            except Exception as e:
+                ui.log("error", f"Plan generation failed: {e}")
 
         # ── Reporting ─────────────────────────────────────────────────────
         elif cmd == "queue":
@@ -267,9 +304,73 @@ def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
             except Exception as e:
                 ui.log("error", f"Synthesis failed: {e}")
 
+        elif cmd == "tree":
+            seed = kb.get_seed_topic()
+            ui.print_topic_tree(kb._data, seed)
+
+        elif cmd == "diff":
+            snaps = kb.get_snapshots()
+            if len(snaps) < 2:
+                ui.console.print("  [dim]Not enough snapshots yet (need 2+). Snapshots are saved automatically.[/dim]")
+            else:
+                before = snaps[-2]["data"]
+                after  = snaps[-1]["data"]
+                d = kb.diff_snapshots(before, after)
+                ui.console.print(f"  Added topics:   [green]{d['added_topics']}[/green]")
+                ui.console.print(f"  Removed topics: [red]{d['removed_topics']}[/red]")
+                ui.console.print(f"  Facts delta:    [cyan]+{d['total_facts_delta']}[/cyan]")
+                for ch in d["changed_topics"][:10]:
+                    ui.console.print(
+                        f"  [dim]{ch['topic']}[/dim]  "
+                        f"facts [cyan]{ch['facts_delta']:+d}[/cyan]  "
+                        f"conf {ch['confidence_delta']:+.2f}"
+                    )
+
+        elif cmd == "objectives":
+            kb.update_objective_scores()
+            ui.print_objectives(kb.get_objectives(), kb.get_objective_coverage())
+
+        # ── Hypotheses ────────────────────────────────────────────────────
+        elif cmd.startswith("hypothesis"):
+            parts = raw.split(None, 2)
+            sub = parts[1].lower() if len(parts) > 1 else ""
+            if sub == "add" and len(parts) > 2:
+                idx = kb.add_hypothesis(parts[2])
+                kb.save()
+                ui.log("ok", f"Hypothesis #{idx+1} added: {parts[2][:60]}")
+            elif sub == "list":
+                ui.print_hypotheses(kb.get_hypotheses())
+            else:
+                ui.console.print("  Usage: [cyan]hypothesis add <text>[/cyan]  or  [cyan]hypothesis list[/cyan]")
+
+        elif cmd.startswith("similar"):
+            query = raw[7:].strip()
+            if query:
+                results = kb.get_similar_facts(query)
+                if results:
+                    for r in results:
+                        ui.console.print(
+                            f"  [dim]{r['similarity']:.2f}[/dim] "
+                            f"[cyan]{r['topic']}[/cyan]: {r['content'][:100]}"
+                        )
+                else:
+                    ui.console.print("  [dim]No results (embeddings disabled or no facts yet)[/dim]")
+            else:
+                ui.console.print("  Usage: [cyan]similar <query text>[/cyan]")
+
         # ── Export / Import ───────────────────────────────────────────────
         elif cmd == "export":
             _export_session(kb, session)
+
+        elif cmd == "obsidian":
+            import report as report_module
+            vault_dir = os.path.join(session["dir"], "obsidian_vault")
+            report_module.export_obsidian(kb, vault_dir)
+
+        elif cmd == "csv":
+            import report as report_module
+            csv_path = os.path.join(session["dir"], "facts.csv")
+            report_module.export_csv(kb, csv_path)
 
         elif cmd.startswith("import"):
             parts = raw.split(None, 1)
@@ -278,6 +379,37 @@ def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
             else:
                 _import_facts(kb, parts[1])
                 display.update(facts=kb.get_stats()["total_facts"])
+
+        # ── RomRaider ─────────────────────────────────────────────────────
+        elif cmd == "romraider":
+            try:
+                import romraider
+                params = romraider.fetch_and_parse_all()
+                if params:
+                    count = romraider.ingest_into_kb(params, kb)
+                    kb.save()
+                    ui.log("ok", f"RomRaider: ingested [bold]{count}[/bold] parameters as facts")
+                    display.update(facts=kb.get_stats()["total_facts"])
+                else:
+                    ui.log("warn", "RomRaider: no parameters found")
+            except ImportError:
+                ui.log("error", "romraider.py not found")
+            except Exception as e:
+                ui.log("error", f"RomRaider ingestion failed: {e}")
+
+        # ── Web UI ────────────────────────────────────────────────────────
+        elif cmd == "webui":
+            try:
+                import subprocess
+                port = config.WEB_DASHBOARD_PORT
+                subprocess.Popen(
+                    ["python", os.path.join(os.path.dirname(__file__), "web_app.py"),
+                     "--port", str(port)],
+                    start_new_session=True,
+                )
+                ui.log("ok", f"Web dashboard started at [cyan]http://localhost:{port}[/cyan]")
+            except Exception as e:
+                ui.log("error", f"Failed to start web UI: {e}")
 
         elif cmd in ("help", "?", "h"):
             ui.console.print(_help_str())
@@ -343,6 +475,9 @@ def run_research() -> str:
 
     stats = kb.get_stats()
 
+    # Save a snapshot at session start for later diffing
+    kb.save_snapshot(label="session_start")
+
     model_idx = ui.select_model()
     config.set_active_model_index(model_idx)
 
@@ -359,47 +494,67 @@ def run_research() -> str:
 
     searcher = WebSearcher()
     groq     = GroqClient()
-    loop     = ResearchLoop(kb, searcher, groq)
 
-    # Start live display
+    # Start live display first so patching works
     display = ui.LiveDisplay(initial_queue=stats["queue_size"])
     display.update(
         done=stats["topics_researched"],
         facts=stats["total_facts"],
         model=config.MODEL_CATALOG[model_idx]["short"],
         tier=tier,
+        lanes=config.RESEARCH_LANES,
     )
     display.start()
 
-    # Patch the research loop to push stats to the live display after each cycle
-    _orig_log = loop._log
+    # Primary loop
+    loop = ResearchLoop(kb, searcher, groq, lane_id=0, display=display)
 
-    def _patched_log(msg: str, level: str = "info") -> None:
-        _orig_log(msg, level)
-        s = kb.get_stats()
-        display.update(
-            topic=loop.get_current_topic(),
-            done=s["topics_researched"],
-            queue=s["queue_size"],
-            facts=s["total_facts"],
-            model=groq.get_active_model_name(),
-            tokens=groq.get_usage_stats()["tokens_used"],
-            calls=groq.get_usage_stats()["calls_made"],
-        )
+    def _make_patched_log(lp: ResearchLoop) -> None:
+        _orig = lp._log
+        def _patched(msg: str, level: str = "info") -> None:
+            _orig(msg, level)
+            s = kb.get_stats()
+            display.update(
+                topic=loop.get_current_topic(),
+                done=s["topics_researched"],
+                queue=s["queue_size"],
+                facts=s["total_facts"],
+                model=groq.get_active_model_name(),
+                tokens=groq.get_usage_stats()["tokens_used"],
+                calls=groq.get_usage_stats()["calls_made"],
+            )
+        lp._log = _patched
 
-    loop._log = _patched_log
+    _make_patched_log(loop)
+
+    # Additional lanes
+    extra_loops: list[ResearchLoop] = []
+    extra_threads: list[threading.Thread] = []
+    for lane in range(1, config.RESEARCH_LANES):
+        el = ResearchLoop(kb, WebSearcher(), GroqClient(), lane_id=lane, display=display)
+        _make_patched_log(el)
+        extra_loops.append(el)
+        t = threading.Thread(target=el.run, name=f"research-lane-{lane}", daemon=True)
+        extra_threads.append(t)
+        t.start()
 
     research_thread = threading.Thread(target=loop.run, name="research-loop", daemon=True)
     research_thread.start()
 
     try:
-        result = _command_loop(loop, kb, groq, chosen, display, research_thread)
+        result = _command_loop(loop, kb, groq, chosen, display, research_thread,
+                               extra_loops=extra_loops)
     except KeyboardInterrupt:
         display.stop()
         ui.log("info", "Interrupted — finishing current cycle...")
         loop.signal_stop()
+        for el in extra_loops:
+            el.signal_stop()
         research_thread.join()
         result = "menu"
+
+    # Save end-of-session snapshot for diffing next time
+    kb.save_snapshot(label="session_end")
 
     # Final save and summary
     kb.save()

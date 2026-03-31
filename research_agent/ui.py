@@ -24,7 +24,20 @@ from rich.prompt import Prompt
 from rich.rule import Rule
 from rich.table import Table
 from rich.text import Text
+from rich.tree import Tree
 from rich import box
+
+_SPARKLINE_CHARS = " ▁▂▃▄▅▆▇█"
+
+def _sparkline(values: list[int], width: int = 15) -> str:
+    """Render a list of int values as a unicode sparkline of given width."""
+    if not values:
+        return " " * width
+    data = values[-width:]
+    max_v = max(data) or 1
+    chars = [_SPARKLINE_CHARS[min(8, int(v / max_v * 8))] for v in data]
+    # Pad left if shorter than width
+    return "".join(chars).rjust(width)
 
 console = Console(highlight=False)
 
@@ -92,8 +105,11 @@ class LiveDisplay:
             "tokens":   0,
             "calls":    0,
             "paused":   False,
+            "lanes":    1,
         }
         self._start_time = time.monotonic()
+        self._facts_history: list[int] = []   # facts count per completed cycle
+        self._last_facts: int = 0
 
     def _build(self) -> Panel:
         s = self._stats
@@ -108,18 +124,24 @@ class LiveDisplay:
         tc = tier_colors.get(s["tier"], "cyan")
         status_label = "[bold yellow]PAUSED[/bold yellow]" if s["paused"] else f"[{tc}]{s['tier'].upper()}[/{tc}]"
 
-        # Progress bar (manual, avoids Progress widget complexity in Live)
-        bar_width = 30
+        # Progress bar
+        bar_width = 28
         filled = int(bar_width * pct)
         bar = f"[cyan]{'█' * filled}[/cyan][dim]{'░' * (bar_width - filled)}[/dim]"
 
+        # Sparkline of facts-per-cycle
+        spark = _sparkline(self._facts_history, width=12)
+        spark_display = f"[dim cyan]{spark}[/dim cyan]"
+
         topic_display = f"[italic]{s['topic']}[/italic]" if s["topic"] else "[dim]—[/dim]"
+
+        lanes_tag = f"  [dim]×{s['lanes']} lanes[/dim]" if s.get("lanes", 1) > 1 else ""
 
         line = (
             f" {bar}  [bold]{done}[/bold]/[dim]{total}[/dim] topics  "
-            f"[magenta]{s['facts']}[/magenta] facts  "
+            f"[magenta]{s['facts']}[/magenta] facts {spark_display}  "
             f"[yellow]{s['model']}[/yellow]  "
-            f"{status_label}  "
+            f"{status_label}{lanes_tag}  "
             f"[dim]{s['tokens']:,} tok  {elapsed_str}[/dim]"
         )
 
@@ -143,6 +165,13 @@ class LiveDisplay:
         if self._live:
             self._live.stop()
             self._live = None
+
+    def record_cycle(self, new_facts: int) -> None:
+        """Call after each research cycle with the net-new fact count for the sparkline."""
+        with self._lock:
+            self._facts_history.append(new_facts)
+            if len(self._facts_history) > 60:
+                self._facts_history.pop(0)
 
     def update(self, **kwargs) -> None:
         with self._lock:
@@ -430,6 +459,118 @@ def print_session_list(sessions: list[dict]) -> None:
     console.print(Panel(
         table,
         title="[bold cyan]◈  Sessions[/bold cyan]",
+        border_style="cyan",
+        padding=(0, 1),
+    ))
+
+
+def print_topic_tree(kb_data: dict, seed_topic: str = "") -> None:
+    """Render the topic relationship graph as a Rich tree."""
+    knowledge = kb_data.get("knowledge", {})
+    if not knowledge:
+        console.print("  [dim]No topics researched yet.[/dim]")
+        return
+
+    # Build adjacency: topic → [related_topics]
+    root_label = seed_topic or "Research Topics"
+    tree = Tree(f"[bold cyan]{root_label}[/bold cyan]")
+
+    # Find topics with no incoming edges (roots) or just list all
+    all_related = set()
+    for entry in knowledge.values():
+        for r in entry.get("related_topics", []):
+            all_related.add(r)
+
+    roots = [k for k in knowledge if k not in all_related]
+    if not roots:
+        roots = list(knowledge.keys())[:10]
+
+    def _add_children(node: Tree, key: str, depth: int, visited: set) -> None:
+        if depth > 3 or key in visited:
+            return
+        visited.add(key)
+        entry = knowledge.get(key, {})
+        for rel in entry.get("related_topics", [])[:6]:
+            if rel in knowledge:
+                rel_entry = knowledge[rel]
+                facts_count = len(rel_entry.get("facts", []))
+                child = node.add(
+                    f"[cyan]{rel}[/cyan] [dim]({facts_count} facts)[/dim]"
+                )
+                _add_children(child, rel, depth + 1, visited)
+
+    for root_key in roots[:8]:
+        entry = knowledge.get(root_key, {})
+        facts_count = len(entry.get("facts", []))
+        branch = tree.add(
+            f"[bold]{root_key}[/bold] [magenta]({facts_count} facts)[/magenta]"
+        )
+        _add_children(branch, root_key, 1, {root_key})
+
+    console.print(Panel(
+        tree,
+        title="[bold cyan]◈  Topic Tree[/bold cyan]",
+        border_style="cyan",
+        padding=(0, 1),
+    ))
+
+
+def print_objectives(objectives: list[dict], coverage: float) -> None:
+    """Print research objectives with completion scores."""
+    if not objectives:
+        console.print("  [dim]No objectives set. Add via config.RESEARCH_OBJECTIVES.[/dim]")
+        return
+
+    table = Table(box=box.SIMPLE_HEAD, show_header=True,
+                  header_style="bold cyan", pad_edge=False)
+    table.add_column("Status", width=3)
+    table.add_column("Score",  width=7)
+    table.add_column("Objective")
+
+    for obj in objectives:
+        score = obj.get("score", 0.0)
+        done  = obj.get("completed", False)
+        icon  = "[bold green]✓[/bold green]" if done else "[dim]○[/dim]"
+        score_bar = "█" * int(score * 8) + "░" * (8 - int(score * 8))
+        color = "green" if done else ("yellow" if score > 0.3 else "dim")
+        table.add_row(icon, f"[{color}]{score_bar}[/{color}]", obj["text"])
+
+    console.print(Panel(
+        table,
+        title=f"[bold cyan]◈  Objectives[/bold cyan]  [dim]coverage {coverage:.0%}[/dim]",
+        border_style="cyan",
+        padding=(0, 1),
+    ))
+
+
+def print_hypotheses(hypotheses: list[dict]) -> None:
+    """Print hypothesis tracking table."""
+    if not hypotheses:
+        console.print("  [dim]No hypotheses tracked. Use: hypothesis add <text>[/dim]")
+        return
+
+    status_styles = {
+        "confirmed":  "[bold green]✓ confirmed[/bold green]",
+        "refuted":    "[bold red]✗ refuted[/bold red]",
+        "uncertain":  "[yellow]? uncertain[/yellow]",
+        "open":       "[dim]○ open[/dim]",
+    }
+
+    table = Table(box=box.SIMPLE_HEAD, show_header=True,
+                  header_style="bold cyan", pad_edge=False)
+    table.add_column("#",          style="bold cyan", width=3)
+    table.add_column("Status",     width=14)
+    table.add_column("Conf",       width=5)
+    table.add_column("Hypothesis", max_width=55)
+
+    for i, hyp in enumerate(hypotheses, 1):
+        status = status_styles.get(hyp.get("status", "open"), "[dim]open[/dim]")
+        conf   = f"{hyp.get('confidence', 0.0):.2f}"
+        table.add_row(str(i), status, conf, hyp["text"])
+
+    console.print(Panel(
+        table,
+        title="[bold cyan]◈  Hypotheses[/bold cyan]",
         border_style="cyan",
         padding=(0, 1),
     ))

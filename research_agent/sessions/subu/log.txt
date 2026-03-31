@@ -1,0 +1,199 @@
+[03:19:58] Researching: [bold]2016 subaru forester xt fa20dit CAN frames decoding[/bold]
+[03:20:04] Fetched 4 pages (2,587 chars)  [dim]4 fresh URL(s)[/dim]
+[03:21:02] [dim]Skipping cross-ref (KB has 0 topics, threshold 5)[/dim]
+[03:21:02] [dim]done=1  queue=3  facts=3  [green]+3[/green] new[/dim]
+[03:21:07] Researching: [bold]Decoding CAN frames for the FA20DIT engine[/bold]
+[03:21:22] Fetched 4 pages (5,535 chars)  [dim]4 fresh URL(s)[/dim]
+[03:21:23] [dim]Skipping cross-ref (KB has 1 topics, threshold 5)[/dim]
+[03:21:23] [dim]done=2  queue=5  facts=3  [dim]+0[/dim] new[/dim]
+[03:21:28] Researching: [bold]ScoobyCAN tool development and usage[/bold]
+[03:21:34] Fetched 4 pages (10,982 chars)  [dim]4 fresh URL(s)[/dim]
+[03:21:46] JSON parse failed for 'ScoobyCAN tool development and usage' — skipping
+[03:21:46] Researching: [bold]Subaru Forester XT turbo replacement procedures[/bold]
+[03:21:52] Fetched 4 pages (10,106 chars)  [dim]4 fresh URL(s)[/dim]
+[03:23:02] JSON parse failed for 'Subaru Forester XT turbo replacement procedures' — skipping
+[03:23:02] Researching: [bold]Identify FA20DIT-specific CAN IDs and payload structures[/bold]
+[03:23:10] Fetched 4 pages (15,059 chars)  [dim]4 fresh URL(s)[/dim]
+[03:24:54] JSON parse failed for 'Identify FA20DIT-specific CAN IDs and payload structures' — skipping
+[03:24:54] Researching: [bold]Map Subaru 2015-2019 OBD2 PIDs to FA20DIT engine parameters[/bold]
+[03:25:02] Fetched 4 pages (20,000 chars)  [dim]4 fresh URL(s)[/dim]
+[03:25:02] Groq extraction failed for 'Map Subaru 2015-2019 OBD2 PIDs to FA20DIT engine parameters': Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organization `org_01kmxtx2sfesxtq3khkgvn6969` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9531, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Retrying in 60s...
+[03:26:03] Retry failed for 'Map Subaru 2015-2019 OBD2 PIDs to FA20DIT engine parameters': Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organization `org_01kmxtx2sfesxtq3khkgvn6969` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 10492, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Skipping.
+[03:26:03] Researching: [bold]Determine checksum algorithms used in Subaru CAN frames[/bold]
+[03:26:08] Fetched 4 pages (9,852 chars)  [dim]4 fresh URL(s)[/dim]
+[03:26:29] JSON parse failed for 'Determine checksum algorithms used in Subaru CAN frames' — skipping
+[03:26:29] Queue empty — generating new topics from knowledge gaps...
+[03:26:46] Still no topics after gap generation. Sleeping 30s...
+[03:27:16] Queue empty — generating new topics from knowledge gaps...
+[03:27:18] Generated 15 gap topics
+[03:27:18] Researching: [bold]OBD2 PID support for 2015-2019 Subaru models[/bold]
+[03:27:32] Fetched 4 pages (1,385 chars)  [dim]4 fresh URL(s)[/dim]
+[03:27:37] JSON parse failed for 'OBD2 PID support for 2015-2019 Subaru models' — skipping
+[03:27:37] Researching: [bold]SSM parameter data for FA20DIT engine tuning[/bold]
+[03:27:44] Fetched 4 pages (6,585 chars)  [dim]4 fresh URL(s)[/dim]
+[03:28:14] JSON parse failed for 'SSM parameter data for FA20DIT engine tuning' — skipping
+[03:28:14] Researching: [bold]Subaru CAN frame structure and protocol documentation[/bold]
+[03:28:32] Fetched 3 pages (5,934 chars)  [dim]3 fresh URL(s)[/dim]
+[03:29:11] JSON parse failed for 'Subaru CAN frame structure and protocol documentation' — skipping
+[03:29:11] Researching: [bold]ScoobyCAN limitations and alternative tools for CAN frame decoding[/bold]
+[03:29:20] Fetched 4 pages (9,266 chars)  [dim]4 fresh URL(s)[/dim]
+[03:30:10] JSON parse failed for 'ScoobyCAN limitations and alternative tools for CAN frame decoding' — skipping
+[03:30:10] Researching: [bold]FA20DIT engine sensor data and calibration parameters[/bold]
+[03:30:21] Fetched 4 pages (10,507 chars)  [dim]4 fresh URL(s)[/dim]
+[03:31:36] JSON parse failed for 'FA20DIT engine sensor data and calibration parameters' — skipping
+[03:31:36] Researching: [bold]2015-2019 Subaru Forester XT transmission control module data[/bold]
+[03:31:52] Fetched 4 pages (2,749 chars)  [dim]4 fresh URL(s)[/dim]
+[03:32:27] JSON parse failed for '2015-2019 Subaru Forester XT transmission control module data' — skipping
+[03:32:27] Researching: [bold]OBD2 trouble code definitions for Subaru vehicles[/bold]
+[03:32:32] Fetched 4 pages (926 chars)  [dim]4 fresh URL(s)[/dim]
+[03:32:45] [dim]Skipping cross-ref (KB has 2 topics, threshold 5)[/dim]
+[03:32:45] [dim]done=3  queue=11  facts=5  [green]+2[/green] new[/dim]
+[03:32:46] Researching: [bold]Subaru manufacturer-specific OBD2 trouble codes[/bold]
+[03:32:55] Fetched 4 pages (6,109 chars)  [dim]4 fresh URL(s)[/dim]
+[03:32:56] [dim]Skipping cross-ref (KB has 3 topics, threshold 5)[/dim]
+[03:32:56] [dim]done=4  queue=13  facts=8  [green]+3[/green] new[/dim]
+[03:32:58] Researching: [bold]Subaru OBD2 trouble code P0120[/bold]
+[03:33:03] Fetched 4 pages (9,797 chars)  [dim]4 fresh URL(s)[/dim]
+[03:33:05] [dim]Skipping cross-ref (KB has 4 topics, threshold 5)[/dim]
+[03:33:05] [dim]done=5  queue=15  facts=13  [green]+5[/green] new[/dim]
+[03:33:06] Researching: [bold]Tumble generator valve position sensor circuit issues in Subaru vehicles[/bold]
+[03:33:11] Fetched 4 pages (1,689 chars)  [dim]4 fresh URL(s)[/dim]
+[03:33:14] [dim]done=6  queue=20  facts=16  [green]+3[/green] new[/dim]
+[03:33:15] Researching: [bold]Engine control system malfunctions in 2015-2019 Subaru models[/bold]
+[03:33:31] Fetched 4 pages (13,985 chars)  [dim]4 fresh URL(s)[/dim]
+[03:33:34] [dim]done=7  queue=25  facts=19  [green]+3[/green] new[/dim]
+[03:33:35] Researching: [bold]Subaru P0120 throttle position sensor replacement[/bold]
+[03:33:40] Fetched 4 pages (1,138 chars)  [dim]4 fresh URL(s)[/dim]
+[03:33:43] [dim]done=8  queue=30  facts=22  [green]+3[/green] new[/dim]
+[03:33:44] Researching: [bold]Subaru P0120 wiring harness repair[/bold]
+[03:33:50] Fetched 4 pages (10,493 chars)  [dim]4 fresh URL(s)[/dim]
+[03:34:08] JSON parse failed for 'Subaru P0120 wiring harness repair' — skipping
+[03:34:08] Researching: [bold]Subaru throttle body cleaning and maintenance[/bold]
+[03:34:13] Fetched 4 pages (6,169 chars)  [dim]4 fresh URL(s)[/dim]
+[03:35:08] JSON parse failed for 'Subaru throttle body cleaning and maintenance' — skipping
+[03:35:08] Researching: [bold]TGV valve replacement cost[/bold]
+[03:35:15] Fetched 4 pages (11,137 chars)  [dim]4 fresh URL(s)[/dim]
+[03:36:31] JSON parse failed for 'TGV valve replacement cost' — skipping
+[03:36:31] Researching: [bold]Subaru Tumble Generator Valve sensor replacement[/bold]
+[03:36:36] Fetched 4 pages (2,647 chars)  [dim]4 fresh URL(s)[/dim]
+[03:36:55] JSON parse failed for 'Subaru Tumble Generator Valve sensor replacement' — skipping
+[03:36:55] Researching: [bold]Electrical connector issues in Subaru vehicles[/bold]
+[03:37:01] Fetched 4 pages (8,762 chars)  [dim]4 fresh URL(s)[/dim]
+[03:37:55] JSON parse failed for 'Electrical connector issues in Subaru vehicles' — skipping
+[03:37:55] Researching: [bold]DTC B28A1 Eyesight Communication(ECM) troubleshooting[/bold]
+[03:38:00] Fetched 4 pages (8,938 chars)  [dim]4 fresh URL(s)[/dim]
+[03:39:11] JSON parse failed for 'DTC B28A1 Eyesight Communication(ECM) troubleshooting' — skipping
+[03:39:11] Researching: [bold]2015-2019 Subaru Outback cruise control system reliability[/bold]
+[03:39:18] Fetched 4 pages (17,249 chars)  [dim]4 fresh URL(s)[/dim]
+[03:41:05] JSON parse failed for '2015-2019 Subaru Outback cruise control system reliability' — skipping
+[03:41:05] Researching: [bold]Subaru Outback vehicle speed control system safety concerns[/bold]
+[03:41:11] Fetched 4 pages (6,749 chars)  [dim]4 fresh URL(s)[/dim]
+[03:42:13] JSON parse failed for 'Subaru Outback vehicle speed control system safety concerns' — skipping
+[03:42:13] Researching: [bold]Subaru P0120 throttle position sensor location[/bold]
+[03:42:20] Fetched 4 pages (15,024 chars)  [dim]4 fresh URL(s)[/dim]
+[03:44:00] JSON parse failed for 'Subaru P0120 throttle position sensor location' — skipping
+[03:44:00] Researching: [bold]Subaru throttle position sensor calibration[/bold]
+[03:44:07] Fetched 4 pages (5,865 chars)  [dim]4 fresh URL(s)[/dim]
+[03:44:54] JSON parse failed for 'Subaru throttle position sensor calibration' — skipping
+[03:44:54] Researching: [bold]Subaru P0120 troubleshooting[/bold]
+[03:45:00] Fetched 4 pages (15,209 chars)  [dim]4 fresh URL(s)[/dim]
+[03:46:33] JSON parse failed for 'Subaru P0120 troubleshooting' — skipping
+[03:46:33] Researching: [bold]2015-2019 Subaru OBD2 parameters[/bold]
+[03:46:48] Fetched 4 pages (3,747 chars)  [dim]4 fresh URL(s)[/dim]
+[03:46:59] [dim]done=9  queue=26  facts=25  [green]+3[/green] new[/dim]
+[03:47:00] Researching: [bold]SSM parameter data for 2015-2019 Subaru[/bold]
+[03:47:47] Fetched 1 pages (379 chars)  [dim]1 fresh URL(s)[/dim]
+[03:47:52] JSON parse failed for 'SSM parameter data for 2015-2019 Subaru' — skipping
+[03:47:52] Researching: [bold]Specific SSM parameter data for 2015-2019 Subaru vehicles[/bold]
+[03:48:30] Fetched 4 pages (20,000 chars)  [dim]4 fresh URL(s)[/dim]
+[03:48:31] Groq extraction failed for 'Specific SSM parameter data for 2015-2019 Subaru vehicles': Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organization `org_01kmxtx2sfesxtq3khkgvn6969` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 6348, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Retrying in 60s...
+[03:50:30] Retry failed for 'Specific SSM parameter data for 2015-2019 Subaru vehicles': Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organization `org_01kmxtx2sfesxtq3khkgvn6969` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 6373, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Skipping.
+[03:55:59] Researching: [bold]Detailed troubleshooting procedures for tumble generator valve position sensor circuit issues in Subaru vehicles[/bold]
+[03:56:05] Fetched 4 pages (11,793 chars)  [dim]4 fresh URL(s)[/dim]
+[03:56:29] JSON parse failed for 'Detailed troubleshooting procedures for tumble generator valve position sensor circuit issues in Subaru vehicles' — skipping
+[03:56:29] Researching: [bold]Interactions between tumble generator valve position sensor circuit issues and other engine systems in Subaru vehicles[/bold]
+[03:56:35] Fetched 4 pages (1,079 chars)  [dim]4 fresh URL(s)[/dim]
+[03:57:06] JSON parse failed for 'Interactions between tumble generator valve position sensor circuit issues and other engine systems in Subaru vehicles' — skipping
+[03:57:06] Researching: [bold]Specific OBD2 and SSM parameter data for 2015-2019 Subaru models related to engine control system malfunctions[/bold]
+[03:57:13] Fetched 4 pages (15,022 chars)  [dim]4 fresh URL(s)[/dim]
+[03:57:14] Groq extraction failed for 'Specific OBD2 and SSM parameter data for 2015-2019 Subaru models related to engine control system malfunctions': Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organization `org_01kmxtx2sfesxtq3khkgvn6969` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 6029, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Retrying in 60s...
+[03:58:14] Retry failed for 'Specific OBD2 and SSM parameter data for 2015-2019 Subaru models related to engine control system malfunctions': Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organization `org_01kmxtx2sfesxtq3khkgvn6969` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 6029, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Skipping.
+[03:58:14] Researching: [bold]CAN frame decoding for 2015-2019 Subaru models[/bold]
+[03:58:22] Fetched 4 pages (8,550 chars)  [dim]4 fresh URL(s)[/dim]
+[03:58:42] JSON parse failed for 'CAN frame decoding for 2015-2019 Subaru models' — skipping
+[03:58:42] Researching: [bold]Relationship between DTC B28A1 and engine control system malfunctions in 2015-2019 Subaru models[/bold]
+[03:58:50] Fetched 4 pages (17,520 chars)  [dim]4 fresh URL(s)[/dim]
+[04:00:38] JSON parse failed for 'Relationship between DTC B28A1 and engine control system malfunctions in 2015-2019 Subaru models' — skipping
+[04:00:38] Researching: [bold]Throttle position sensor replacement procedure for other Subaru models[/bold]
+[04:00:46] Fetched 4 pages (10,719 chars)  [dim]4 fresh URL(s)[/dim]
+[04:01:52] JSON parse failed for 'Throttle position sensor replacement procedure for other Subaru models' — skipping
+[04:01:52] Researching: [bold]Specific SSM parameter data for 2015-2019 Subaru models[/bold]
+[04:01:57] Fetched 4 pages (5,880 chars)  [dim]4 fresh URL(s)[/dim]
+[04:02:22] JSON parse failed for 'Specific SSM parameter data for 2015-2019 Subaru models' — skipping
+[04:02:22] Researching: [bold]Relationship between throttle position sensor and other engine systems in 2015-2019 Subaru models[/bold]
+[04:02:27] Fetched 4 pages (15,468 chars)  [dim]4 fresh URL(s)[/dim]
+[04:04:00] JSON parse failed for 'Relationship between throttle position sensor and other engine systems in 2015-2019 Subaru models' — skipping
+[04:04:00] Researching: [bold]Exact list of OEM-specific PIDs and parameters accessed by OBDLink MX+ for 2015‑2019 Subaru models.[/bold]
+[04:04:19] Fetched 3 pages (12,934 chars)  [dim]3 fresh URL(s)[/dim]
+[04:05:47] JSON parse failed for 'Exact list of OEM-specific PIDs and parameters accessed by OBDLink MX+ for 2015‑2019 Subaru models.' — skipping
+[04:05:47] Researching: [bold]How the thinkcar scanner detects catalytic converter efficiency on Subaru vehicles (specific sensor data or codes used).[/bold]
+[04:05:54] Fetched 4 pages (5,455 chars)  [dim]4 fresh URL(s)[/dim]
+[04:06:36] JSON parse failed for 'How the thinkcar scanner detects catalytic converter efficiency on Subaru vehicles (specific sensor data or codes used).' — skipping
+[04:06:36] Researching: [bold]Detailed mapping between Subaru Legacy engine tuning module settings and corresponding CAN frames or SSM parameters.[/bold]
+[04:06:44] Fetched 4 pages (7,764 chars)  [dim]4 fresh URL(s)[/dim]
+[04:07:44] JSON parse failed for 'Detailed mapping between Subaru Legacy engine tuning module settings and corresponding CAN frames or SSM parameters.' — skipping
+[04:07:44] Researching: [bold]Availability of Subaru-specific SSM (Subaru Select Monitor) diagnostic commands for the FA20DIT engine in 2016 Forester XT.[/bold]
+[04:07:51] Fetched 4 pages (10,815 chars)  [dim]4 fresh URL(s)[/dim]
+[04:09:12] JSON parse failed for 'Availability of Subaru-specific SSM (Subaru Select Monitor) diagnostic commands for the FA20DIT engine in 2016 Forester XT.' — skipping
+[04:09:13] Researching: [bold]Impact of engine management upgrades on existing Subaru trouble codes (e.g., P0120) and whether new codes are introduced.[/bold]
+[04:09:18] Fetched 4 pages (12,517 chars)  [dim]4 fresh URL(s)[/dim]
+[04:10:45] JSON parse failed for 'Impact of engine management upgrades on existing Subaru trouble codes (e.g., P0120) and whether new codes are introduced.' — skipping
+[04:10:45] Researching: [bold]OBD2 scanner compatibility with 2015-2019 Subaru models[/bold]
+[04:10:52] Fetched 4 pages (15,022 chars)  [dim]4 fresh URL(s)[/dim]
+[04:12:29] JSON parse failed for 'OBD2 scanner compatibility with 2015-2019 Subaru models' — skipping
+[04:12:29] Researching: [bold]Subaru-specific OBD2 parameter IDs and descriptions[/bold]
+[04:12:36] Fetched 4 pages (5,498 chars)  [dim]4 fresh URL(s)[/dim]
+[04:13:45] JSON parse failed for 'Subaru-specific OBD2 parameter IDs and descriptions' — skipping
+[04:13:45] Researching: [bold]Engine management upgrade options for 2015-2019 Subaru models[/bold]
+[04:14:01] Fetched 4 pages (10,330 chars)  [dim]4 fresh URL(s)[/dim]
+[04:14:53] JSON parse failed for 'Engine management upgrade options for 2015-2019 Subaru models' — skipping
+[04:14:53] Researching: [bold]Real-time data logging and analysis for FA20DIT engine performance[/bold]
+[04:15:10] Fetched 4 pages (10,587 chars)  [dim]4 fresh URL(s)[/dim]
+[04:16:12] JSON parse failed for 'Real-time data logging and analysis for FA20DIT engine performance' — skipping
+[04:16:12] Researching: [bold]Subaru Select Monitor (SSM) software capabilities and limitations[/bold]
+[04:16:19] Fetched 4 pages (17,605 chars)  [dim]4 fresh URL(s)[/dim]
+[04:18:07] JSON parse failed for 'Subaru Select Monitor (SSM) software capabilities and limitations' — skipping
+[04:18:07] Researching: [bold]Comparison of OBD2 and SSM parameter data for Subaru vehicles[/bold]
+[04:18:24] Fetched 4 pages (2,767 chars)  [dim]4 fresh URL(s)[/dim]
+[04:18:46] [dim]done=10  queue=11  facts=29  [green]+4[/green] new[/dim]
+[04:18:51] Researching: [bold]Subaru Select Monitor (SSM) protocol details[/bold]
+[04:19:07] Fetched 3 pages (9,677 chars)  [dim]3 fresh URL(s)[/dim]
+[04:19:47] JSON parse failed for 'Subaru Select Monitor (SSM) protocol details' — skipping
+[04:19:47] Researching: [bold]OBD1 to OBD2 upgrade process for Subaru vehicles[/bold]
+[04:20:00] Fetched 4 pages (8,857 chars)  [dim]4 fresh URL(s)[/dim]
+[04:21:02] JSON parse failed for 'OBD1 to OBD2 upgrade process for Subaru vehicles' — skipping
+[04:21:02] Researching: [bold]Comparison of SSM and OBD2 parameter data for Subaru vehicles[/bold]
+[04:21:17] Fetched 4 pages (2,580 chars)  [dim]4 fresh URL(s)[/dim]
+[04:21:49] JSON parse failed for 'Comparison of SSM and OBD2 parameter data for Subaru vehicles' — skipping
+[04:21:49] Researching: [bold]Detailed mapping of SSM commands to specific ECU/TCU parameters for 2015‑2019 Subaru models.[/bold]
+[04:22:14] Fetched 3 pages (11,706 chars)  [dim]3 fresh URL(s)[/dim]
+[04:23:25] JSON parse failed for 'Detailed mapping of SSM commands to specific ECU/TCU parameters for 2015‑2019 Subaru models.' — skipping
+[04:23:25] Researching: [bold]Procedures and tool support for converting an OBD1‑only Subaru to OBD2, including required ECU or engine changes.[/bold]
+[04:23:42] Fetched 4 pages (20,000 chars)  [dim]4 fresh URL(s)[/dim]
+[04:23:43] Groq extraction failed for 'Procedures and tool support for converting an OBD1‑only Subaru to OBD2, including required ECU or engine changes.': Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organization `org_01kmxtx2sfesxtq3khkgvn6969` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 7242, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Retrying in 60s...
+[04:24:44] Retry failed for 'Procedures and tool support for converting an OBD1‑only Subaru to OBD2, including required ECU or engine changes.': Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organization `org_01kmxtx2sfesxtq3khkgvn6969` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 7242, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Skipping.
+[04:24:44] Researching: [bold]Comparison of data access depth between OBD2 standard PIDs and Subaru Select Monitor Protocol (SSM) for the same vehicle generation.[/bold]
+[04:25:27] Fetched 3 pages (11,932 chars)  [dim]3 fresh URL(s)[/dim]
+[04:26:08] JSON parse failed for 'Comparison of data access depth between OBD2 standard PIDs and Subaru Select Monitor Protocol (SSM) for the same vehicle generation.' — skipping
+[04:26:08] Researching: [bold]FA20DIT engine performance optimization using OBD2 and SSM data[/bold]
+[04:27:13] Fetched 0 pages (0 chars)
+[04:27:13] No web content for 'FA20DIT engine performance optimization using OBD2 and SSM data' — re-queuing
+[04:27:18] Researching: [bold]Subaru vehicle communication protocols and interfaces[/bold]
+[04:28:25] Fetched 1 pages (5,000 chars)  [dim]1 fresh URL(s)[/dim]
+[04:28:31] JSON parse failed for 'Subaru vehicle communication protocols and interfaces' — skipping
+[04:28:31] Researching: [bold]CAN frame decoding for other Subaru engine models (e.g. FB20, FB25)[/bold]
+[04:29:36] Fetched 0 pages (0 chars)
+[04:29:36] No web content for 'CAN frame decoding for other Subaru engine models (e.g. FB20, FB25)' — re-queuing
+[04:29:41] Researching: [bold]Integrating OBD2 and SSM data with external data loggers or ECUs[/bold]
+[04:30:49] Fetched 0 pages (0 chars)
+[04:30:49] No web content for 'Integrating OBD2 and SSM data with external data loggers or ECUs' — re-queuing

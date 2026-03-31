@@ -13,8 +13,38 @@ def _ts() -> str:
     return datetime.now(timezone.utc).strftime("%H:%M:%S")
 
 
+def seed_from_plan(kb: KnowledgeBase, groq: GroqClient) -> int:
+    """
+    Generate a research plan via LLM and seed the KB queue from it.
+    Returns number of topics added.
+    """
+    seed = kb.get_seed_topic()
+    if not seed:
+        return 0
+    ui.log("info", "Generating research plan from seed topic...")
+    try:
+        plan = groq.generate_research_plan(seed, config.RESEARCH_FOCUS)
+    except Exception as e:
+        ui.log("warn", f"Research plan generation failed: {e}")
+        return 0
+
+    added = 0
+    for item in plan:
+        topic = item.get("topic", "").strip()
+        priority = item.get("priority", 2)
+        if topic:
+            kb.add_to_queue(topic, priority=priority, source_topic="research_plan")
+            added += 1
+
+    if added:
+        kb.save()
+        ui.log("ok", f"Research plan: {added} topics queued")
+    return added
+
+
 class ResearchLoop:
-    def __init__(self, kb: KnowledgeBase, searcher: WebSearcher, groq: GroqClient):
+    def __init__(self, kb: KnowledgeBase, searcher: WebSearcher, groq: GroqClient,
+                 lane_id: int = 0, display=None):
         self._kb = kb
         self._searcher = searcher
         self._groq = groq
@@ -23,7 +53,10 @@ class ResearchLoop:
         self._log_lock    = threading.Lock()
         self._log_file    = None
         self._current_topic: str = ""
-        self._consecutive_barren: int = 0       # cycles with 0 new facts (adaptive sleep)
+        self._consecutive_barren: int = 0
+        self._cycle_count: int = 0          # total cycles completed this session
+        self._lane_id: int = lane_id        # 0 = primary, 1+ = additional lanes
+        self._display = display             # LiveDisplay reference for sparkline
         self._open_log()
 
     def get_current_topic(self) -> str:
@@ -205,6 +238,16 @@ class ResearchLoop:
 
         self._kb.mark_completed(topic)
 
+        # Update objective scores periodically
+        self._cycle_count += 1
+        if self._cycle_count % 5 == 0:
+            self._kb.update_objective_scores()
+
+        # Hypothesis evaluation
+        if (config.HYPOTHESIS_EVAL_CYCLES > 0
+                and self._cycle_count % config.HYPOTHESIS_EVAL_CYCLES == 0):
+            self._evaluate_hypotheses()
+
         try:
             self._kb.save()
         except Exception as e:
@@ -214,12 +257,26 @@ class ResearchLoop:
         stats = self._kb.get_stats()
         fact_delta = f"[green]+{new_facts_added}[/green]" if new_facts_added > 0 else "[dim]+0[/dim]"
         conf_note  = f"  [yellow]{conflicts_stored} conflict(s)[/yellow]" if conflicts_stored else ""
+        lane_tag   = f"[dim] lane{self._lane_id}[/dim]" if self._lane_id > 0 else ""
         self._log(
             f"[dim]done={stats['topics_researched']}  "
             f"queue={stats['queue_size']}  "
-            f"facts={stats['total_facts']}  {fact_delta} new[/dim]{conf_note}",
+            f"facts={stats['total_facts']}  {fact_delta} new[/dim]{conf_note}{lane_tag}",
             "save",
         )
+
+        # Push sparkline data point to display
+        if self._display is not None:
+            try:
+                self._display.record_cycle(new_facts_added)
+            except Exception:
+                pass
+
+        # Auto-digest
+        if (config.AUTO_DIGEST_CYCLES > 0
+                and self._cycle_count % config.AUTO_DIGEST_CYCLES == 0
+                and self._lane_id == 0):
+            self._generate_auto_digest()
 
         # Adaptive sleep: slow down if research is coming up dry repeatedly
         if new_facts_added == 0:
@@ -237,6 +294,54 @@ class ResearchLoop:
 
         if not self._stop_event.is_set():
             time.sleep(sleep_time)
+
+    # ------------------------------------------------------------------
+    # Hypothesis evaluation
+    # ------------------------------------------------------------------
+
+    def _evaluate_hypotheses(self) -> None:
+        hypotheses = self._kb.get_hypotheses()
+        open_hyps = [(i, h) for i, h in enumerate(hypotheses) if h.get("status") == "open"]
+        if not open_hyps:
+            return
+
+        # Collect all facts for evaluation
+        all_facts = []
+        for entry in self._kb._data.get("knowledge", {}).values():
+            for f in entry.get("facts", []):
+                content = f.get("content", "")
+                if content:
+                    all_facts.append(content)
+
+        for idx, hyp in open_hyps[:3]:  # evaluate at most 3 per batch
+            try:
+                result = self._groq.evaluate_hypothesis(hyp["text"], all_facts)
+                self._kb.update_hypothesis(
+                    idx,
+                    status=result["status"],
+                    confidence=result["confidence"],
+                    evidence_for=result["evidence_for"],
+                    evidence_against=result["evidence_against"],
+                )
+                if result["status"] != "open":
+                    self._log(
+                        f"Hypothesis [{result['status'].upper()}] "
+                        f"({result['confidence']:.0%}): {hyp['text'][:60]}",
+                        "ok" if result["status"] == "confirmed" else "warn",
+                    )
+            except Exception as e:
+                self._log(f"Hypothesis evaluation failed: {e}", "warn")
+
+    # ------------------------------------------------------------------
+    # Auto-digest
+    # ------------------------------------------------------------------
+
+    def _generate_auto_digest(self) -> None:
+        try:
+            import report as report_module
+            report_module.generate_auto_digest(self._kb, self._groq)
+        except Exception as e:
+            self._log(f"Auto-digest failed: {e}", "warn")
 
     # ------------------------------------------------------------------
     # Gap topic generation (item 15: larger batch)

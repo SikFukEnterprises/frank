@@ -380,6 +380,73 @@ class GroqClient:
             return []
         return result.get("topics", [])[:batch]
 
+    def generate_research_plan(self, seed_topic: str, research_focus: str) -> list[dict]:
+        """
+        Generate a structured research plan from a seed topic.
+        Returns list of {phase: int, topic: str, rationale: str, priority: int}.
+        """
+        schema = """{
+  "plan": [
+    {"phase": 1, "topic": "specific sub-topic", "rationale": "why this first", "priority": 1},
+    {"phase": 2, "topic": "another sub-topic", "rationale": "builds on phase 1", "priority": 2}
+  ]
+}"""
+        system = (
+            "You are a research strategist. Create a focused, ordered research plan. "
+            "Each topic should be specific and searchable — concrete enough to find real sources. "
+            "Return valid JSON only.\n\n"
+            f"{research_focus}"
+        )
+        user = (
+            f"Seed topic: {seed_topic}\n\n"
+            f"Create a 10–15 step research plan. Order phases so foundational "
+            f"knowledge comes first, then specific technical details, then edge cases. "
+            f"Each topic should be something you could search for directly.\n\n"
+            f"Return as JSON:\n{schema}"
+        )
+        result = self._call_json(system, user)
+        if result is None:
+            return []
+        return result.get("plan", [])
+
+    def evaluate_hypothesis(
+        self, hypothesis: str, kb_facts: list[str]
+    ) -> dict:
+        """
+        Evaluate a hypothesis against collected KB facts.
+        Returns {status, confidence, evidence_for, evidence_against, reasoning}.
+        """
+        schema = """{
+  "status": "confirmed|refuted|uncertain",
+  "confidence": 0.0,
+  "evidence_for": ["fact snippet..."],
+  "evidence_against": ["fact snippet..."],
+  "reasoning": "brief explanation"
+}"""
+        facts_text = "\n".join(f"- {f}" for f in kb_facts[:40])
+        system = (
+            "You are a research analyst evaluating hypotheses against evidence. "
+            "Be rigorous — only mark confirmed if multiple high-confidence facts support it. "
+            "Return valid JSON only."
+        )
+        user = (
+            f"Hypothesis: {hypothesis}\n\n"
+            f"Available facts:\n{facts_text}\n\n"
+            f"Evaluate whether this hypothesis is supported, refuted, or uncertain "
+            f"based on the facts above. Confidence should be 0.0–1.0.\n\n"
+            f"Return as JSON:\n{schema}"
+        )
+        result = self._call_json(system, user)
+        if result is None:
+            return {"status": "uncertain", "confidence": 0.0,
+                    "evidence_for": [], "evidence_against": [], "reasoning": "evaluation failed"}
+        result.setdefault("status", "uncertain")
+        result.setdefault("confidence", 0.0)
+        result.setdefault("evidence_for", [])
+        result.setdefault("evidence_against", [])
+        result.setdefault("reasoning", "")
+        return result
+
     def generate_synthesis_report(self, kb_data: dict, seed_topic: str, research_focus: str) -> str:
         """
         Use the best available model to synthesize all collected facts into a

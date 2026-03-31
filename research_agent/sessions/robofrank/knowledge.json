@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "created": "2026-03-31T04:38:46.254197+00:00",
+    "last_updated": "2026-03-31T04:44:18.085991+00:00",
+    "topics_researched": 0,
+    "total_facts": 0,
+    "seed_topic": "creating a raspberry pi powered AI robot with personality, movement, persistent memory, camera"
+  },
+  "research_queue": [],
+  "completed_topics": [],
+  "visited_urls": [
+    "https://www.logicweb.com/knowledge-base/how-to-build-your-own-ai-powered-raspberry-pi-device-a-comprehensive-guide/",
+    "https://medium.com/@bryanlondres5/building-a-smart-robot-vision-and-voice-enabled-robot-on-raspberry-pi-1cde1862cceb",
+    "https://projects-raspberry.com/robogpt-an-ai-powered-robot/",
+    "https://visualsizer.com/develop-extendable-smart-robots-with-python-and-raspberry-pi-build-program-and-evolve-intelligent-machines/",
+    "https://en.wikipedia.org/wiki/Raspberry_Pi",
+    "https://www.raspberrypi.com/products/ai-kit/",
+    "https://github.com/memovai/mimiclaw",
+    "https://github.com/memovai/mimiclaw/issues",
+    "https://grokipedia.com/page/Raspberry_Pi_robot_kits",
+    "https://gopigo.io/",
+    "https://github.com/wzpan/dingdang-robot",
+    "https://github.com/wzpan/dingdang-robot/issues"
+  ],
+  "dry_topics": {},
+  "follow_up_mentions": {},
+  "knowledge": {}
+}

@@ -4,3 +4,16 @@ requests
 beautifulsoup4
 lxml
 rich
+# New source types
+pypdf
+feedparser
+# Web dashboard
+fastapi
+uvicorn[standard]
+jinja2
+# Knowledge graph
+networkx
+# ELM327 serial
+pyserial
+# Optional: vector embeddings (comment out if not needed — large install)
+# sentence-transformers

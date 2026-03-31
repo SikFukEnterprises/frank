@@ -1,9 +1,33 @@
+import hashlib
 import json
 import os
 import re
 from datetime import datetime, timezone, timedelta
 
 import config
+
+# ── Optional networkx ─────────────────────────────────────────────────────────
+try:
+    import networkx as nx
+    _NX_AVAILABLE = True
+except ImportError:
+    _NX_AVAILABLE = False
+
+# ── Optional sentence-transformers ────────────────────────────────────────────
+_encoder = None
+
+def _get_encoder():
+    global _encoder
+    if _encoder is not None:
+        return _encoder
+    if not config.ENABLE_EMBEDDINGS:
+        return None
+    try:
+        from sentence_transformers import SentenceTransformer
+        _encoder = SentenceTransformer("all-MiniLM-L6-v2")
+        return _encoder
+    except ImportError:
+        return None
 
 
 def _now() -> str:
@@ -76,6 +100,7 @@ class KnowledgeBase:
     def __init__(self):
         self._data: dict = {}
         self._dirty = False
+        self._graph = nx.DiGraph() if _NX_AVAILABLE else None
 
     # ------------------------------------------------------------------
     # Persistence
@@ -93,10 +118,15 @@ class KnowledgeBase:
             "research_queue": [],
             "completed_topics": [],
             "visited_urls": [],
-            "dry_topics": {},      # topic_key → consecutive zero-fact cycles
-            "follow_up_mentions": {},  # topic_key → times proposed as follow-up
+            "dry_topics": {},
+            "follow_up_mentions": {},
             "knowledge": {},
+            "objectives": [],
+            "snapshots": [],
+            "hypotheses": [],
         }
+        if config.RESEARCH_OBJECTIVES:
+            self.set_objectives(config.RESEARCH_OBJECTIVES)
         self.add_to_queue(seed_topic, priority=1, source_topic="seed")
         self._ensure_data_dir()
         self.save()
@@ -112,6 +142,10 @@ class KnowledgeBase:
             self._data.setdefault("dry_topics", {})
             self._data.setdefault("follow_up_mentions", {})
             self._data.setdefault("visited_urls", [])
+            self._data.setdefault("objectives", [])
+            self._data.setdefault("snapshots", [])
+            self._data.setdefault("hypotheses", [])
+            self._rebuild_graph()
             return True
         except (json.JSONDecodeError, OSError) as e:
             print(f"[WARN] Failed to load knowledge base: {e}")
@@ -393,6 +427,7 @@ class KnowledgeBase:
         existing["research_count"] = existing.get("research_count", 0) + 1
 
         knowledge[key] = existing
+        self._update_graph_node(key, existing)
 
         total = sum(len(v["facts"]) for v in knowledge.values())
         self._data["meta"]["total_facts"] = total
@@ -413,6 +448,7 @@ class KnowledgeBase:
                 rt = self._data["knowledge"][topic_b].setdefault("related_topics", [])
                 if topic_a not in rt:
                     rt.append(topic_a)
+            self._update_graph_edges(topic_a, topic_b)
 
     def get_all_summaries(self) -> dict:
         """Return {topic_key: summary} for all researched topics."""
@@ -439,3 +475,249 @@ class KnowledgeBase:
 
     def get_seed_topic(self) -> str:
         return self._data.get("meta", {}).get("seed_topic", "")
+
+    # ------------------------------------------------------------------
+    # Knowledge graph (networkx)
+    # ------------------------------------------------------------------
+
+    def _rebuild_graph(self) -> None:
+        if not _NX_AVAILABLE:
+            return
+        self._graph = nx.DiGraph()
+        for key, entry in self._data.get("knowledge", {}).items():
+            facts_count = len(entry.get("facts", []))
+            self._graph.add_node(key, label=key, facts_count=facts_count)
+            for rel in entry.get("related_topics", []):
+                if rel:
+                    self._graph.add_edge(key, rel)
+
+    def _update_graph_node(self, key: str, entry: dict) -> None:
+        if not _NX_AVAILABLE or self._graph is None:
+            return
+        facts_count = len(entry.get("facts", []))
+        self._graph.add_node(key, label=key, facts_count=facts_count)
+
+    def _update_graph_edges(self, topic_a: str, topic_b: str) -> None:
+        if not _NX_AVAILABLE or self._graph is None:
+            return
+        if topic_a and topic_b:
+            self._graph.add_edge(topic_a, topic_b)
+
+    def get_graph(self):
+        """Return the internal networkx DiGraph, or None if networkx is unavailable."""
+        return self._graph
+
+    def get_graph_data(self) -> dict:
+        """
+        Return graph as JSON-serializable dict regardless of networkx availability.
+        Builds directly from KB data if networkx is not installed.
+        """
+        nodes = []
+        edges = []
+        seen_edges = set()
+        for key, entry in self._data.get("knowledge", {}).items():
+            nodes.append({
+                "id": key,
+                "label": key,
+                "facts_count": len(entry.get("facts", [])),
+            })
+            for rel in entry.get("related_topics", []):
+                if rel:
+                    edge_key = (key, rel)
+                    if edge_key not in seen_edges:
+                        seen_edges.add(edge_key)
+                        edges.append({"source": key, "target": rel})
+        return {"nodes": nodes, "edges": edges}
+
+    # ------------------------------------------------------------------
+    # Session snapshots & diff
+    # ------------------------------------------------------------------
+
+    def snapshot(self) -> dict:
+        """Return a lightweight snapshot of current KB state for diffing."""
+        result = {}
+        for key, entry in self._data.get("knowledge", {}).items():
+            facts = entry.get("facts", [])
+            conf_values = [_CONF_RANK.get(f.get("confidence", "low"), 2) for f in facts]
+            avg_conf = (sum(conf_values) / len(conf_values)) if conf_values else 2.0
+            summary = entry.get("summary", "")
+            result[key] = {
+                "fact_count": len(facts),
+                "confidence_avg": avg_conf,
+                "summary_hash": hashlib.md5(summary.encode()).hexdigest()[:8],
+            }
+        return result
+
+    def save_snapshot(self, label: str = "") -> None:
+        """Append current snapshot to the snapshots list (capped at 10)."""
+        snap = {
+            "label": label or _now(),
+            "taken_at": _now(),
+            "data": self.snapshot(),
+        }
+        snapshots = self._data.setdefault("snapshots", [])
+        snapshots.append(snap)
+        if len(snapshots) > 10:
+            snapshots.pop(0)
+
+    def get_snapshots(self) -> list[dict]:
+        return self._data.get("snapshots", [])
+
+    @staticmethod
+    def diff_snapshots(before: dict, after: dict) -> dict:
+        """
+        Compare two snapshots and return a diff summary.
+        Each snapshot is {topic_key: {fact_count, confidence_avg, summary_hash}}.
+        """
+        before_keys = set(before.keys())
+        after_keys = set(after.keys())
+
+        added = sorted(after_keys - before_keys)
+        removed = sorted(before_keys - after_keys)
+        changed = []
+
+        for key in before_keys & after_keys:
+            b = before[key]
+            a = after[key]
+            fd = a["fact_count"] - b["fact_count"]
+            cd = a["confidence_avg"] - b["confidence_avg"]
+            if fd != 0 or abs(cd) > 0.1 or a["summary_hash"] != b["summary_hash"]:
+                changed.append({
+                    "topic": key,
+                    "facts_delta": fd,
+                    "confidence_delta": round(cd, 2),
+                    "summary_changed": a["summary_hash"] != b["summary_hash"],
+                })
+
+        total_facts_before = sum(v["fact_count"] for v in before.values())
+        total_facts_after = sum(v["fact_count"] for v in after.values())
+
+        return {
+            "added_topics": added,
+            "removed_topics": removed,
+            "changed_topics": changed,
+            "total_facts_delta": total_facts_after - total_facts_before,
+        }
+
+    # ------------------------------------------------------------------
+    # Research objectives
+    # ------------------------------------------------------------------
+
+    def set_objectives(self, objectives: list[str]) -> None:
+        """Initialize objectives list from plain text strings."""
+        self._data["objectives"] = [
+            {"text": obj, "completed": False, "score": 0.0, "evidence": []}
+            for obj in objectives
+        ]
+
+    def update_objective_scores(self) -> None:
+        """Score each objective based on keyword overlap with high-confidence KB facts."""
+        objectives = self._data.get("objectives", [])
+        if not objectives:
+            return
+
+        # Collect all high+medium confidence facts
+        all_facts = []
+        for entry in self._data.get("knowledge", {}).values():
+            for f in entry.get("facts", []):
+                if f.get("confidence") in ("high", "medium"):
+                    all_facts.append(f.get("content", "").lower())
+
+        for obj in objectives:
+            text = obj["text"].lower()
+            keywords = set(re.findall(r"\b\w{4,}\b", text))
+            if not keywords:
+                continue
+            hits = 0
+            evidence = []
+            for fact in all_facts:
+                overlap = sum(1 for kw in keywords if kw in fact)
+                if overlap >= max(1, len(keywords) // 3):
+                    hits += 1
+                    evidence.append(fact[:100])
+            score = min(1.0, hits / max(1, len(keywords)))
+            obj["score"] = round(score, 3)
+            obj["evidence"] = evidence[:5]
+            obj["completed"] = score >= 0.7
+
+    def get_objectives(self) -> list[dict]:
+        return self._data.get("objectives", [])
+
+    def get_objective_coverage(self) -> float:
+        objectives = self._data.get("objectives", [])
+        if not objectives:
+            return 0.0
+        return round(sum(o["score"] for o in objectives) / len(objectives), 3)
+
+    # ------------------------------------------------------------------
+    # Hypotheses
+    # ------------------------------------------------------------------
+
+    def add_hypothesis(self, text: str) -> int:
+        """Add a hypothesis and return its index."""
+        hyps = self._data.setdefault("hypotheses", [])
+        hyps.append({
+            "text": text,
+            "status": "open",       # open | confirmed | refuted | uncertain
+            "confidence": 0.0,
+            "evidence_for": [],
+            "evidence_against": [],
+            "created_at": _now(),
+            "updated_at": _now(),
+        })
+        return len(hyps) - 1
+
+    def update_hypothesis(self, idx: int, status: str, confidence: float,
+                          evidence_for: list[str], evidence_against: list[str]) -> None:
+        hyps = self._data.get("hypotheses", [])
+        if 0 <= idx < len(hyps):
+            hyps[idx].update({
+                "status": status,
+                "confidence": confidence,
+                "evidence_for": evidence_for[:5],
+                "evidence_against": evidence_against[:5],
+                "updated_at": _now(),
+            })
+
+    def get_hypotheses(self) -> list[dict]:
+        return self._data.get("hypotheses", [])
+
+    # ------------------------------------------------------------------
+    # Semantic similarity search (optional embeddings)
+    # ------------------------------------------------------------------
+
+    def get_similar_facts(self, query: str, top_k: int = 5) -> list[dict]:
+        """
+        Return top_k most semantically similar facts to query.
+        Requires sentence-transformers and ENABLE_EMBEDDINGS=True.
+        Falls back to empty list if unavailable.
+        """
+        enc = _get_encoder()
+        if enc is None:
+            return []
+        try:
+            import numpy as np
+            # Collect all facts
+            all_facts = []
+            for key, entry in self._data.get("knowledge", {}).items():
+                for f in entry.get("facts", []):
+                    content = f.get("content", "")
+                    if content:
+                        all_facts.append({"topic": key, **f})
+            if not all_facts:
+                return []
+            contents = [f["content"] for f in all_facts]
+            q_emb = enc.encode([query])
+            f_embs = enc.encode(contents)
+            # Cosine similarity
+            q_norm = q_emb / (np.linalg.norm(q_emb, axis=1, keepdims=True) + 1e-9)
+            f_norm = f_embs / (np.linalg.norm(f_embs, axis=1, keepdims=True) + 1e-9)
+            sims = (f_norm @ q_norm.T).flatten()
+            top_idx = np.argsort(sims)[::-1][:top_k]
+            return [
+                {**all_facts[i], "similarity": float(sims[i])}
+                for i in top_idx
+            ]
+        except Exception as e:
+            print(f"[WARN] Embedding search failed: {e}")
+            return []

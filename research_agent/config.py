@@ -116,6 +116,37 @@ def set_research_focus(focus: str) -> None:
     global RESEARCH_FOCUS
     RESEARCH_FOCUS = focus
 
+# ── Research lane count ────────────────────────────────────────────────────────
+RESEARCH_LANES: int = 1          # 1–3 parallel research loops
+
+# ── Auto-digest ────────────────────────────────────────────────────────────────
+AUTO_DIGEST_CYCLES: int = 50     # generate a digest every N research cycles (0 = off)
+
+# ── Search diversity ───────────────────────────────────────────────────────────
+SEARCH_QUERY_VARIANTS: int = 2   # number of varied query phrasings to try per topic
+
+# ── Source types ───────────────────────────────────────────────────────────────
+ENABLE_PDF_FETCH: bool   = True
+ENABLE_GITHUB_CRAWL: bool = True
+ENABLE_RSS_MONITOR: bool  = False   # on by default but no feeds configured until set
+ENABLE_WAYBACK_FALLBACK: bool = True
+
+# ── RSS feeds to monitor (list of feed URLs, any topic) ───────────────────────
+RSS_FEEDS: list[str] = []
+
+# ── Objectives ─────────────────────────────────────────────────────────────────
+# List of strings describing research goals. Frank tracks % coverage.
+RESEARCH_OBJECTIVES: list[str] = []
+
+# ── Hypothesis tracking ────────────────────────────────────────────────────────
+HYPOTHESIS_EVAL_CYCLES: int = 10  # re-evaluate hypotheses every N cycles
+
+# ── Vector embeddings (requires sentence-transformers) ────────────────────────
+ENABLE_EMBEDDINGS: bool = False   # set True after: pip install sentence-transformers
+
+# ── Web dashboard ──────────────────────────────────────────────────────────────
+WEB_DASHBOARD_PORT: int = 8765
+
 _dir = os.path.join(os.path.dirname(__file__), "data")
 KNOWLEDGE_FILE = os.path.join(_dir, "knowledge.json")
 QUEUE_FILE = os.path.join(_dir, "queue.json")
