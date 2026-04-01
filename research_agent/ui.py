@@ -7,8 +7,10 @@ Provides:
   - Speed tier selection with time estimates
   - Formatted banners and status panels
   - Session list display
+  - Thread-safe command input (prompt_toolkit)
 """
 
+import os
 import threading
 import time
 from datetime import timedelta
@@ -26,6 +28,17 @@ from rich.table import Table
 from rich.text import Text
 from rich.tree import Tree
 from rich import box
+
+# ── Thread-safe input via prompt_toolkit ──────────────────────────────────────
+try:
+    from prompt_toolkit import PromptSession
+    from prompt_toolkit.patch_stdout import patch_stdout as _pt_patch_stdout
+    from prompt_toolkit.completion import WordCompleter
+    from prompt_toolkit.history import FileHistory
+    from prompt_toolkit.styles import Style as PTStyle
+    _HAS_PROMPT_TOOLKIT = True
+except ImportError:
+    _HAS_PROMPT_TOOLKIT = False
 
 _SPARKLINE_CHARS = " ▁▂▃▄▅▆▇█"
 
@@ -95,6 +108,7 @@ class LiveDisplay:
     def __init__(self, initial_queue: int = 0):
         self._lock  = threading.Lock()
         self._live  = None
+        self._use_live = not _HAS_PROMPT_TOOLKIT  # Rich.Live only as fallback
         self._stats = {
             "topic":    "",
             "done":     0,
@@ -153,13 +167,14 @@ class LiveDisplay:
         )
 
     def start(self) -> None:
-        self._live = Live(
-            self._build(),
-            console=console,
-            auto_refresh=False,   # no background timer — only redraws when we say so
-            transient=False,
-        )
-        self._live.start()
+        if self._use_live:
+            self._live = Live(
+                self._build(),
+                console=console,
+                auto_refresh=False,
+                transient=False,
+            )
+            self._live.start()
 
     def stop(self) -> None:
         if self._live:
@@ -574,3 +589,119 @@ def print_hypotheses(hypotheses: list[dict]) -> None:
         border_style="cyan",
         padding=(0, 1),
     ))
+
+
+# ── Thread-safe command input ─────────────────────────────────────────────────
+
+_COMMAND_WORDS = [
+    "add:", "remove:", "pause", "resume", "quit", "menu",
+    "speed slow", "speed normal", "speed fast", "speed turbo",
+    "model", "lanes", "plan",
+    "queue", "status", "report", "synthesize", "tree", "diff",
+    "objectives", "hypothesis add", "hypothesis list", "similar",
+    "export", "obsidian", "csv", "import", "romraider",
+    "webui", "help",
+]
+
+_BG = "bg:#1a1a2e"
+
+
+class CommandPrompt:
+    """Thread-safe command prompt using prompt_toolkit.
+
+    Uses patch_stdout() so that background thread output (ui.log, console.print)
+    is rendered above the input line without corrupting the user's typing.
+    A persistent bottom toolbar shows live research stats.
+    """
+
+    def __init__(self, display: LiveDisplay):
+        self._display = display
+        self._patch_ctx = None
+
+        history_path = os.path.join(os.path.dirname(__file__), ".frank_history")
+
+        self._style = PTStyle.from_dict({
+            "bottom-toolbar": f"{_BG} #cccccc",
+        })
+
+        self._session = PromptSession(
+            completer=WordCompleter(_COMMAND_WORDS, sentence=True),
+            history=FileHistory(history_path),
+            bottom_toolbar=self._toolbar,
+            style=self._style,
+            refresh_interval=2.0,
+        )
+
+    def _toolbar(self):
+        s = self._display._stats
+        elapsed = int(time.monotonic() - self._display._start_time)
+        elapsed_str = _fmt_duration(elapsed)
+
+        done = s["done"]
+        queue = s["queue"]
+        total = done + queue
+
+        tier = s.get("tier", "").upper()
+        model = s.get("model", "")
+        facts = s["facts"]
+        tokens = s["tokens"]
+        topic = s.get("topic", "")
+        paused = s.get("paused", False)
+        lanes = s.get("lanes", 1)
+
+        spark = _sparkline(self._display._facts_history, width=10)
+
+        status = "PAUSED" if paused else tier
+        lanes_tag = f" ×{lanes}" if lanes > 1 else ""
+        topic_tag = f"  → {topic}" if topic else ""
+
+        return [
+            (f"{_BG} #ffffff bold", " SFE "),
+            (f"{_BG} #555555", " │ "),
+            (f"{_BG} #ffffff bold", f"{done}"),
+            (f"{_BG} #888888", f"/{total} topics "),
+            (f"{_BG} #555555", "│ "),
+            (f"{_BG} #ff79c6", f"{facts}"),
+            (f"{_BG} #888888", " facts "),
+            (f"{_BG} #6272a4", f"{spark} "),
+            (f"{_BG} #555555", "│ "),
+            (f"{_BG} #f1fa8c", f"{model} "),
+            (f"{_BG} #555555", "│ "),
+            (f"{_BG} #ff9500 bold" if paused else f"{_BG} #8be9fd bold", f"{status}{lanes_tag} "),
+            (f"{_BG} #555555", "│ "),
+            (f"{_BG} #888888", f"{tokens:,} tok  {elapsed_str}"),
+            (f"{_BG} #666666 italic", f"{topic_tag} "),
+        ]
+
+    def start(self) -> None:
+        """Enter patch_stdout — all stdout writes appear above the prompt."""
+        self._patch_ctx = _pt_patch_stdout(raw=True)
+        self._patch_ctx.__enter__()
+
+    def stop(self) -> None:
+        """Exit patch_stdout."""
+        if self._patch_ctx:
+            try:
+                self._patch_ctx.__exit__(None, None, None)
+            except Exception:
+                pass
+            self._patch_ctx = None
+
+    def prompt(self) -> str:
+        """Read a command. Raises EOFError on Ctrl-D."""
+        return self._session.prompt("frank❯ ").strip()
+
+
+class FallbackPrompt:
+    """Fallback when prompt_toolkit is not installed."""
+    def start(self) -> None: pass
+    def stop(self) -> None: pass
+    def prompt(self) -> str:
+        return input().strip()
+
+
+def create_command_prompt(display: LiveDisplay) -> CommandPrompt | FallbackPrompt:
+    """Create the best available command prompt."""
+    if _HAS_PROMPT_TOOLKIT:
+        return CommandPrompt(display)
+    return FallbackPrompt()
