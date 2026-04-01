@@ -25,25 +25,74 @@ from urllib.parse import urljoin
 sys.path.insert(0, os.path.dirname(__file__))
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 _ROMRAIDER_URLS = [
     "https://raw.githubusercontent.com/RomRaider/RomRaider/master/definitions/log_defs.xml",
 ]
 
-_HEADERS = {"User-Agent": "frank-research-agent/1.0"}
-_FETCH_TIMEOUT = 15
+# Fallback: GitHub API content endpoint (returns base64, but works when raw CDN is blocked)
+_ROMRAIDER_API_URLS = [
+    "https://api.github.com/repos/RomRaider/RomRaider/contents/definitions/log_defs.xml?ref=master",
+]
+
+_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+_API_HEADERS = {
+    "User-Agent": "frank-research-agent/1.0",
+    "Accept": "application/vnd.github.v3+json",
+}
+_FETCH_TIMEOUT = 30
+_MAX_RETRIES = 3
+
+
+def _build_session() -> requests.Session:
+    """Build a requests session with automatic retries on connection errors."""
+    session = requests.Session()
+    retry = Retry(
+        total=_MAX_RETRIES,
+        backoff_factor=1,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
 
 
 # ── XML fetch + parse ──────────────────────────────────────────────────────────
 
 def fetch_logger_xml(url: str) -> str | None:
     """Fetch RomRaider logger XML from a URL. Returns text or None."""
+    session = _build_session()
     try:
-        resp = requests.get(url, timeout=_FETCH_TIMEOUT, headers=_HEADERS)
+        resp = session.get(url, timeout=_FETCH_TIMEOUT, headers=_HEADERS)
         resp.raise_for_status()
         return resp.text
     except Exception as e:
         print(f"[WARN] Failed to fetch {url}: {e}")
+        return None
+
+
+def _fetch_via_api(api_url: str) -> str | None:
+    """Fallback: fetch file content via the GitHub API (base64-encoded)."""
+    import base64
+    session = _build_session()
+    try:
+        resp = session.get(api_url, timeout=_FETCH_TIMEOUT, headers=_API_HEADERS)
+        resp.raise_for_status()
+        data = resp.json()
+        content = data.get("content", "")
+        return base64.b64decode(content).decode("utf-8")
+    except Exception as e:
+        print(f"[WARN] GitHub API fallback failed {api_url}: {e}")
         return None
 
 
@@ -193,11 +242,22 @@ def parse_logger_xml(xml_text: str, source_url: str = "") -> list[dict]:
 
 
 def fetch_and_parse_all() -> list[dict]:
-    """Fetch all configured RomRaider XML URLs and return merged parameter list."""
+    """Fetch all configured RomRaider XML URLs and return merged parameter list.
+
+    Tries raw.githubusercontent.com first, then falls back to the GitHub API
+    if the raw CDN is unreachable (common on restricted server environments).
+    """
     all_params = []
     seen_ids = set()
-    for url in _ROMRAIDER_URLS:
+
+    for idx, url in enumerate(_ROMRAIDER_URLS):
         xml_text = fetch_logger_xml(url)
+
+        # Fallback to GitHub API if raw fetch failed
+        if not xml_text and idx < len(_ROMRAIDER_API_URLS):
+            print("[INFO] Trying GitHub API fallback...")
+            xml_text = _fetch_via_api(_ROMRAIDER_API_URLS[idx])
+
         if not xml_text:
             continue
         params = parse_logger_xml(xml_text, source_url=url)
