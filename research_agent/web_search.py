@@ -70,6 +70,25 @@ def _rate_limited_get(url: str, headers: dict | None = None, timeout: int | None
     return requests.get(url, timeout=t, headers=h)
 
 
+_BOILERPLATE_RE = re.compile(
+    r"(?:skip to (?:main )?content|table of contents|cookie|"
+    r"share this (?:article|page|post)|follow us on|subscribe to|"
+    r"sign up for|newsletter|accept all cookies|privacy policy|"
+    r"terms of (?:service|use)|all rights reserved|"
+    r"advertisement|sponsored content|related articles|"
+    r"read more:|click here to)",
+    re.IGNORECASE,
+)
+
+
+def _strip_boilerplate(text: str) -> str:
+    """Remove common boilerplate lines before truncation so the char budget
+    is spent on actual content."""
+    lines = text.split("\n")
+    cleaned = [line for line in lines if not _BOILERPLATE_RE.search(line)]
+    return "\n".join(cleaned)
+
+
 def _extract_main_content(soup: BeautifulSoup) -> str:
     """
     Try to find the main content area before falling back to full body text.
@@ -189,6 +208,7 @@ class WebSearcher:
                 for tag in soup(_STRIP_TAGS):
                     tag.decompose()
                 text = _extract_main_content(soup)
+                text = _strip_boilerplate(text)
                 text = re.sub(r"\s+", " ", text).strip()
                 return text[: config.MAX_PAGE_CHARS]
 
@@ -233,6 +253,7 @@ class WebSearcher:
             for tag in soup(_STRIP_TAGS):
                 tag.decompose()
             text = _extract_main_content(soup)
+            text = _strip_boilerplate(text)
             text = re.sub(r"\s+", " ", text).strip()
             return text[: config.MAX_PAGE_CHARS]
         except Exception as e:

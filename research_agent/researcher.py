@@ -146,6 +146,14 @@ class ResearchLoop:
 
         topic = topic_item["topic"]
         self._current_topic = topic
+
+        # Skip topics researched within the last 24 hours (unless explicitly re-queued)
+        if (topic_item.get("source_topic") != "reresearch"
+                and self._kb.was_recently_researched(topic, hours=24)):
+            self._log(f"[dim]Skipping '{topic}' — researched <24h ago[/dim]", "skip")
+            time.sleep(config.SLEEP_BETWEEN_CYCLES)
+            return
+
         self._log(f"Researching: [bold]{topic}[/bold]", "info")
 
         # Step 2 — Web search (skip already-visited URLs)
@@ -198,18 +206,38 @@ class ResearchLoop:
                 note = c.get("note", "conflicting sources")
                 self._log(f"Conflict: {note}", "warn")
 
-        # Step 4 — Cross-reference (skip if KB is too small to be meaningful)
+        # Step 4 — Cross-reference (skip if KB too small, too few facts, or all low-confidence)
         cross_ref = None
-        if self._kb.topic_count() >= config.CROSS_REF_MIN_TOPICS:
+        should_cross_ref = (
+            self._kb.topic_count() >= config.CROSS_REF_MIN_TOPICS
+            and len(raw_facts) >= 2
+            and any(f.get("confidence") in ("high", "medium") for f in raw_facts)
+        )
+        if should_cross_ref:
             all_summaries = self._kb.get_all_summaries()
+            # Filter to relevant summaries — keyword overlap with topic/facts
+            topic_words = set(topic.lower().split())
+            fact_words = set()
+            for f in raw_facts:
+                fact_words.update(f.get("content", "").lower().split()[:15])
+            match_words = topic_words | fact_words
+            filtered_summaries = {}
+            for k, v in all_summaries.items():
+                summary_words = set(k.split()) | set(v.lower().split()[:20])
+                if match_words & summary_words:
+                    filtered_summaries[k] = v
+            if not filtered_summaries:
+                filtered_summaries = dict(list(all_summaries.items())[:3])
             try:
-                cross_ref = self._groq.cross_reference(topic, raw_facts, all_summaries)
+                cross_ref = self._groq.cross_reference(topic, raw_facts, filtered_summaries)
             except Exception as e:
                 self._log(f"Cross-reference call failed: {e}", "warn")
         else:
+            reason = (f"KB has {self._kb.topic_count()} topics"
+                      if self._kb.topic_count() < config.CROSS_REF_MIN_TOPICS
+                      else f"{len(raw_facts)} facts extracted")
             self._log(
-                f"[dim]Skipping cross-ref (KB has {self._kb.topic_count()} topics, "
-                f"threshold {config.CROSS_REF_MIN_TOPICS})[/dim]",
+                f"[dim]Skipping cross-ref ({reason})[/dim]",
                 "save",
             )
 

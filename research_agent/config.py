@@ -68,6 +68,28 @@ def set_active_model_index(idx: int) -> None:
 
 MAX_TOKENS = 1024
 TEMPERATURE = 0.3
+
+# ── Per-task token limits ─────────────────────────────────────────────────────
+# Tighter budgets for lightweight tasks, more room for complex extractions.
+TASK_TOKEN_LIMITS: dict = {
+    "extraction":    1536,   # complex extractions need room
+    "cross_ref":     512,    # connections are concise JSON
+    "gap_topics":    256,    # just a list of topic strings
+    "hypothesis":    512,    # evaluation + evidence lists
+    "synthesis":     4096,   # full narrative report
+    "research_plan": 1024,   # moderate
+}
+
+# ── Task-complexity model routing ─────────────────────────────────────────────
+# Offset from preferred model index. 0 = use preferred, 1 = one rank cheaper, etc.
+TASK_MODEL_TIERS: dict = {
+    "heavy":  0,    # extraction, synthesis — use best model
+    "medium": 1,    # cross-ref, hypothesis — one rank cheaper is fine
+    "light":  2,    # gap topics, research plan — cheapest acceptable
+}
+
+# Speed-tier model offset (set by apply_speed_tier, added to task tier offsets)
+SPEED_MODEL_OFFSET: int = 0
 SLEEP_BETWEEN_CYCLES = 5
 MAX_PAGE_CHARS = 5000       # raised from 2000 — more content per page
 PAGES_TO_FETCH = 4          # raised from 2 — broader coverage per topic
@@ -83,10 +105,10 @@ ADAPTIVE_SLEEP_THRESHOLD = 4  # slow down after this many consecutive barren cyc
 
 # Speed tiers — each entry overrides SLEEP_BETWEEN_CYCLES and MAX_TOPICS_PER_CYCLE.
 SPEED_TIERS: dict = {
-    "slow":   {"sleep": 20, "rpm": 15, "max_topics": 2},
-    "normal": {"sleep": 5,  "rpm": 28, "max_topics": 3},
-    "fast":   {"sleep": 1,  "rpm": 28, "max_topics": 5},
-    "turbo":  {"sleep": 0,  "rpm": 28, "max_topics": 5},
+    "slow":   {"sleep": 20, "rpm": 15, "max_topics": 2, "model_offset": 0},
+    "normal": {"sleep": 5,  "rpm": 28, "max_topics": 3, "model_offset": 0},
+    "fast":   {"sleep": 1,  "rpm": 28, "max_topics": 5, "model_offset": 1},
+    "turbo":  {"sleep": 0,  "rpm": 28, "max_topics": 5, "model_offset": 2},
 }
 
 CURRENT_SPEED_TIER: str = "normal"
@@ -94,10 +116,11 @@ CURRENT_SPEED_TIER: str = "normal"
 
 def apply_speed_tier(name: str) -> None:
     """Apply a speed tier — mutates the live config values."""
-    global SLEEP_BETWEEN_CYCLES, MAX_TOPICS_PER_CYCLE, CURRENT_SPEED_TIER
+    global SLEEP_BETWEEN_CYCLES, MAX_TOPICS_PER_CYCLE, CURRENT_SPEED_TIER, SPEED_MODEL_OFFSET
     tier = SPEED_TIERS[name]
     SLEEP_BETWEEN_CYCLES = tier["sleep"]
     MAX_TOPICS_PER_CYCLE = tier["max_topics"]
+    SPEED_MODEL_OFFSET = tier.get("model_offset", 0)
     CURRENT_SPEED_TIER = name
 
 

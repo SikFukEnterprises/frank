@@ -73,6 +73,8 @@ class GroqClient:
         self._active_idx: int = config.ACTIVE_MODEL_INDEX
 
         self._tokens_used: int = 0
+        self._prompt_tokens: int = 0
+        self._completion_tokens: int = 0
         self._calls_made: int = 0
 
     # ------------------------------------------------------------------
@@ -80,7 +82,12 @@ class GroqClient:
     # ------------------------------------------------------------------
 
     def get_usage_stats(self) -> dict:
-        return {"tokens_used": self._tokens_used, "calls_made": self._calls_made}
+        return {
+            "tokens_used": self._tokens_used,
+            "prompt_tokens": self._prompt_tokens,
+            "completion_tokens": self._completion_tokens,
+            "calls_made": self._calls_made,
+        }
 
     def set_preferred_model(self, idx: int) -> None:
         """Change the preferred model mid-session."""
@@ -129,6 +136,27 @@ class GroqClient:
             config.set_active_model_index(idx)
             break
 
+    def _resolve_task_start_idx(self, task_tier: str | None) -> int:
+        """Return the model index to start from for a given task tier.
+
+        Combines the task-complexity offset with the speed-tier offset,
+        clamped to the catalog bounds. Returns self._active_idx when no
+        tier is specified (backward-compat).
+        """
+        if task_tier is None:
+            return self._active_idx
+        base_offset = config.TASK_MODEL_TIERS.get(task_tier, 0)
+        speed_offset = config.SPEED_MODEL_OFFSET
+        target = self._preferred_idx + base_offset + speed_offset
+        target = min(target, len(config.MODEL_CATALOG) - 1)
+        # Skip models still in penalty box
+        now = time.monotonic()
+        while target < len(config.MODEL_CATALOG) and self._model_rl_until[target] > now:
+            target += 1
+        if target >= len(config.MODEL_CATALOG):
+            return self._active_idx  # fallback to current cascade
+        return target
+
     def _per_model_rate_limit(self, idx: int) -> None:
         """Enforce self-imposed per-model RPM limit (sliding 60s window)."""
         call_times = self._model_call_times[idx]
@@ -149,19 +177,24 @@ class GroqClient:
     # Internal call wrapper with cascade
     # ------------------------------------------------------------------
 
-    def _call(self, system: str, user: str, max_tokens: int | None = None) -> str:
+    def _call(self, system: str, user: str, max_tokens: int | None = None,
+              task_tier: str | None = None) -> str:
         """
         Call the active model with automatic cascade on 429s.
 
         Tries models from active_idx downward (weaker).  If all are rate-limited,
         waits for the preferred model to clear.  After each successful call,
         tries to upgrade back toward the preferred model.
+
+        task_tier: optional "heavy"/"medium"/"light" to route to an appropriate
+        model based on task complexity (see config.TASK_MODEL_TIERS).
         """
         self._try_upgrade()
         catalog = config.MODEL_CATALOG
         now = time.monotonic()
 
-        for idx in range(self._active_idx, len(catalog)):
+        start_idx = self._resolve_task_start_idx(task_tier)
+        for idx in range(start_idx, len(catalog)):
             if self._model_rl_until[idx] > now:
                 continue  # still in penalty box
 
@@ -186,6 +219,8 @@ class GroqClient:
 
                 if response.usage:
                     self._tokens_used += response.usage.total_tokens
+                    self._prompt_tokens += getattr(response.usage, 'prompt_tokens', 0)
+                    self._completion_tokens += getattr(response.usage, 'completion_tokens', 0)
                 self._calls_made += 1
                 return response.choices[0].message.content.strip()
 
@@ -204,11 +239,12 @@ class GroqClient:
         ui.log("rate", f"All models rate-limited — waiting {wait_for:.0f}s for {m['short']}")
         time.sleep(wait_for)
         self._model_rl_until[self._preferred_idx] = 0.0
-        return self._call(system, user, max_tokens=max_tokens)  # retry
+        return self._call(system, user, max_tokens=max_tokens, task_tier=task_tier)  # retry
 
-    def _call_json(self, system: str, user: str, retry_strict: bool = True) -> dict | None:
+    def _call_json(self, system: str, user: str, retry_strict: bool = True,
+                   max_tokens: int | None = None, task_tier: str | None = None) -> dict | None:
         """Call and parse JSON. Retries once with stricter prompt on parse error."""
-        raw = self._call(system, user)
+        raw = self._call(system, user, max_tokens=max_tokens, task_tier=task_tier)
         try:
             return self._parse_json(raw)
         except (json.JSONDecodeError, ValueError):
@@ -219,7 +255,7 @@ class GroqClient:
                 + "\n\nCRITICAL: Your response MUST be valid JSON only. "
                 "No text before or after the JSON object. No markdown code fences."
             )
-            raw2 = self._call(strict_system, user)
+            raw2 = self._call(strict_system, user, max_tokens=max_tokens, task_tier=task_tier)
             try:
                 return self._parse_json(raw2)
             except (json.JSONDecodeError, ValueError):
@@ -252,9 +288,13 @@ class GroqClient:
         Returns parsed dict or None on failure.
         """
         now = datetime.now(timezone.utc).isoformat()
+        # Filter out empty/tiny pages that waste input tokens
+        filtered = [(url, text) for url, text in zip(source_urls, page_contents) if len(text) >= 100]
+        if not filtered:
+            filtered = list(zip(source_urls, page_contents))  # fallback to originals
         combined_pages = "\n\n---\n\n".join(
             f"[Source: {url}]\n{text}"
-            for url, text in zip(source_urls, page_contents)
+            for url, text in filtered
         )
 
         system = (
@@ -267,9 +307,12 @@ class GroqClient:
             "DO NOT extract: background definitions, general history, how-it-works overviews, "
             "or facts so generic they would appear in a Wikipedia introduction to the topic."
         )
+        # Truncate existing summary to reduce input tokens — LLM only needs context
+        summary_ctx = existing_summary[:200] if existing_summary else "None"
+
         user = (
             f"Topic: {topic}\n\n"
-            f"Existing knowledge on this topic: {existing_summary or 'None'}\n\n"
+            f"Existing knowledge on this topic: {summary_ctx}\n\n"
             f"New source material:\n{combined_pages}\n\n"
             f"Current timestamp: {now}\n\n"
             f"Extract ONLY facts that are specific and relevant to the research focus:\n"
@@ -282,7 +325,11 @@ class GroqClient:
             f"Return as JSON matching this schema:\n{_EXTRACTION_SCHEMA}"
         )
 
-        result = self._call_json(system, user)
+        # Adaptive output tokens: scale with input content size
+        total_chars = sum(len(text) for _, text in filtered)
+        adaptive_max = max(384, min(config.TASK_TOKEN_LIMITS["extraction"], total_chars // 10 + 256))
+
+        result = self._call_json(system, user, max_tokens=adaptive_max, task_tier="heavy")
         if result is None:
             return None
 
@@ -313,8 +360,10 @@ class GroqClient:
             return {"connections": [], "contradictions": [], "knowledge_gaps": []}
 
         facts_text = "\n".join(f"- {f.get('content', '')}" for f in new_facts[:8])
+        # Scale related context proportionally to fact count
+        related_cap = min(max(len(new_facts), 2), 8)
         related_text = "\n".join(
-            f"[{k}]: {v}" for k, v in list(related_knowledge.items())[:5]
+            f"[{k}]: {v}" for k, v in list(related_knowledge.items())[:related_cap]
         )
 
         system = (
@@ -332,7 +381,9 @@ class GroqClient:
             f"Return as JSON matching this schema:\n{_CROSS_REF_SCHEMA}"
         )
 
-        result = self._call_json(system, user)
+        result = self._call_json(system, user,
+                                 max_tokens=config.TASK_TOKEN_LIMITS["cross_ref"],
+                                 task_tier="medium")
         if result is None:
             return {"connections": [], "contradictions": [], "knowledge_gaps": []}
 
@@ -375,7 +426,9 @@ class GroqClient:
                 f"Return as JSON matching this schema:\n{_GAP_TOPICS_SCHEMA}"
             )
 
-        result = self._call_json(system, user)
+        result = self._call_json(system, user,
+                                 max_tokens=config.TASK_TOKEN_LIMITS["gap_topics"],
+                                 task_tier="light")
         if result is None:
             return []
         return result.get("topics", [])[:batch]
@@ -404,7 +457,9 @@ class GroqClient:
             f"Each topic should be something you could search for directly.\n\n"
             f"Return as JSON:\n{schema}"
         )
-        result = self._call_json(system, user)
+        result = self._call_json(system, user,
+                                 max_tokens=config.TASK_TOKEN_LIMITS["research_plan"],
+                                 task_tier="light")
         if result is None:
             return []
         return result.get("plan", [])
@@ -436,7 +491,9 @@ class GroqClient:
             f"based on the facts above. Confidence should be 0.0–1.0.\n\n"
             f"Return as JSON:\n{schema}"
         )
-        result = self._call_json(system, user)
+        result = self._call_json(system, user,
+                                 max_tokens=config.TASK_TOKEN_LIMITS["hypothesis"],
+                                 task_tier="medium")
         if result is None:
             return {"status": "uncertain", "confidence": 0.0,
                     "evidence_for": [], "evidence_against": [], "reasoning": "evaluation failed"}
@@ -503,12 +560,11 @@ class GroqClient:
             "Tailor the report to the topic and research focus above."
         )
 
-        # Use the preferred (best) model for synthesis; temporarily override active
-        saved_active = self._active_idx
-        self._active_idx = self._preferred_idx
-        try:
-            report_text = self._call(system, user, max_tokens=4096)
-        finally:
-            self._active_idx = saved_active
+        # Adaptive report token budget: scale with fact count
+        fact_count = len(all_facts)
+        report_max = max(1024, min(config.TASK_TOKEN_LIMITS["synthesis"], fact_count * 40 + 512))
+
+        # Use the preferred (best) model for synthesis via task_tier="heavy"
+        report_text = self._call(system, user, max_tokens=report_max, task_tier="heavy")
 
         return report_text
