@@ -574,6 +574,8 @@ def run_research() -> str:
     t.add_row("Queue remaining",   str(final_stats["queue_size"]))
     t.add_row("API calls",         str(token_stats["calls_made"]))
     t.add_row("Tokens used",       f"{token_stats['tokens_used']:,}")
+    t.add_row("  Prompt tokens",   f"{token_stats.get('prompt_tokens', 0):,}")
+    t.add_row("  Completion tokens", f"{token_stats.get('completion_tokens', 0):,}")
     t.add_row("Saved to",          config.KNOWLEDGE_FILE)
     ui.console.print()
     ui.console.print(Panel(t, title="[bold cyan]Session Paused[/bold cyan]",

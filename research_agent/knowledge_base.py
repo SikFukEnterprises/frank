@@ -266,6 +266,23 @@ class KnowledgeBase:
             completed.append(topic)
         self._data["meta"]["topics_researched"] = len(completed)
 
+    def was_recently_researched(self, topic: str, hours: int = 24) -> bool:
+        """Return True if the topic was researched within the last *hours* hours."""
+        key = _normalize(topic)
+        entry = self._data.get("knowledge", {}).get(key)
+        if not entry:
+            return False
+        last = entry.get("last_researched", "")
+        if not last:
+            return False
+        try:
+            last_dt = datetime.fromisoformat(last)
+            if last_dt.tzinfo is None:
+                last_dt = last_dt.replace(tzinfo=timezone.utc)
+            return (datetime.now(timezone.utc) - last_dt).total_seconds() < hours * 3600
+        except ValueError:
+            return False
+
     # ------------------------------------------------------------------
     # Re-research scheduling (item 7)
     # ------------------------------------------------------------------
