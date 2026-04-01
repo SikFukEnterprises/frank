@@ -484,23 +484,23 @@ class GroqClient:
 
         system = (
             "You are a technical research analyst. "
-            "Write a clear, structured report for an engineer who wants to read CAN bus data "
-            "from a specific vehicle. Do not repeat background definitions. "
-            "Focus on what is actionable and specific."
+            "Synthesize collected research facts into a clear, structured report. "
+            "Do not repeat background definitions. "
+            "Focus on what is specific, actionable, and confirmed."
         )
         user = (
+            f"Topic: {seed_topic}\n"
             f"Research focus: {research_focus}\n\n"
             f"Collected facts (tagged with confidence and source topic):\n{facts_text}\n\n"
             f"Identified conflicts:\n{conflicts_text}\n\n"
-            "Write a concise technical report organized into these sections:\n"
-            "1. **Confirmed Frame IDs & Signals** — specific hex IDs and what they carry\n"
-            "2. **OBD2 / SSM PIDs** — specific PID numbers, their meaning and scaling\n"
-            "3. **Hardware & Tools** — specific tools, chipsets, wiring, or configurations confirmed to work\n"
+            "Write a concise technical report with the following sections (omit any with no data):\n"
+            "1. **Key Findings** — the most important confirmed facts and insights\n"
+            "2. **Details & Specifics** — concrete data points, values, configurations, or procedures\n"
+            "3. **Tools & Resources** — specific tools, libraries, hardware, or references confirmed useful\n"
             "4. **Conflicts & Uncertainties** — where sources disagree or data is unverified\n"
             "5. **Gaps — What We Still Need** — specific unknowns that would be most valuable to find\n\n"
             "Use plain text with markdown headers. Be direct and specific. "
-            "Omit any section that has no relevant data. "
-            "Do not include general background about CAN or OBD2."
+            "Tailor the report to the topic and research focus above."
         )
 
         # Use the preferred (best) model for synthesis; temporarily override active

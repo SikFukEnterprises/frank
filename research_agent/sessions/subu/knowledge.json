@@ -1,17 +1,737 @@
 {
   "meta": {
     "created": "2026-03-31T03:19:51.252133+00:00",
-    "last_updated": "2026-03-31T04:30:54.511654+00:00",
-    "topics_researched": 10,
-    "total_facts": 29,
+    "last_updated": "2026-04-01T05:34:16.845190+00:00",
+    "topics_researched": 31,
+    "total_facts": 101,
     "seed_topic": "2016 subaru forester xt fa20dit CAN frames decoding"
   },
   "research_queue": [
     {
-      "topic": "Subaru factory service manual information for OBD2 and SSM systems",
-      "priority": 3,
-      "added_at": "2026-03-31T03:27:18.211924+00:00",
-      "source_topic": "gap_analysis"
+      "topic": "Denso DST-010 interface functionality and limitations",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:17.991922+00:00",
+      "source_topic": "Subaru SSM-IV diagnostic programming software"
+    },
+    {
+      "topic": "Subaru Select Monitor SSM kit pricing and availability",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:17.992265+00:00",
+      "source_topic": "Subaru SSM-IV diagnostic programming software"
+    },
+    {
+      "topic": "SSM-IV software updates and subscription models",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:17.992604+00:00",
+      "source_topic": "Subaru SSM-IV diagnostic programming software"
+    },
+    {
+      "topic": "Comparison of SSM-IV with other diagnostic tools for Subaru vehicles",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:17.992971+00:00",
+      "source_topic": "Subaru SSM-IV diagnostic programming software"
+    },
+    {
+      "topic": "Denso DST-010 compatibility with other vehicle models",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:38.003957+00:00",
+      "source_topic": "Denso DST-010 interface compatibility with other vehicle models"
+    },
+    {
+      "topic": "DoIP high-speed communication protocol",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:38.004076+00:00",
+      "source_topic": "Denso DST-010 interface compatibility with other vehicle models"
+    },
+    {
+      "topic": "SAE J2534 passthru protocol",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:38.004195+00:00",
+      "source_topic": "Denso DST-010 interface compatibility with other vehicle models"
+    },
+    {
+      "topic": "VXDIAG Multi Diagnostic Tool compatibility with 2015-2019 Subaru models",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:57.559524+00:00",
+      "source_topic": "VXDIAG Multi Diagnostic Tool capabilities and limitations"
+    },
+    {
+      "topic": "VXDIAG Multi Diagnostic Tool capabilities for Subaru fault diagnosis and repair",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:57.559693+00:00",
+      "source_topic": "VXDIAG Multi Diagnostic Tool capabilities and limitations"
+    },
+    {
+      "topic": "Comparison of VXDIAG Multi Diagnostic Tool with other diagnostic tools for Subaru",
+      "priority": 1,
+      "added_at": "2026-04-01T05:30:57.559909+00:00",
+      "source_topic": "VXDIAG Multi Diagnostic Tool capabilities and limitations"
+    },
+    {
+      "topic": "Comparison of Innova OBD2 scanners with other brands for Subaru models",
+      "priority": 1,
+      "added_at": "2026-04-01T05:31:30.623313+00:00",
+      "source_topic": "Comparison of OBD2 scanner compatibility with different Subaru models"
+    },
+    {
+      "topic": "Evaluation of Bluedriver's performance and compatibility with Subaru vehicles",
+      "priority": 1,
+      "added_at": "2026-04-01T05:31:30.623441+00:00",
+      "source_topic": "Comparison of OBD2 scanner compatibility with different Subaru models"
+    },
+    {
+      "topic": "Investigation of OBD2 scanner requirements for pre-CANBUS Subarus",
+      "priority": 1,
+      "added_at": "2026-04-01T05:31:30.623568+00:00",
+      "source_topic": "Comparison of OBD2 scanner compatibility with different Subaru models"
+    },
+    {
+      "topic": "Review of Ancel BD200 OBD2 scanner for Subaru owners",
+      "priority": 1,
+      "added_at": "2026-04-01T05:31:57.275569+00:00",
+      "source_topic": "Review of OBD2 scanner features and pricing for Subaru owners"
+    },
+    {
+      "topic": "Topdon TopScan vs Innova 5610: which is better for Subaru diagnostics",
+      "priority": 1,
+      "added_at": "2026-04-01T05:31:57.275973+00:00",
+      "source_topic": "Review of OBD2 scanner features and pricing for Subaru owners"
+    },
+    {
+      "topic": "OBD2 scanner compatibility with specific Subaru models",
+      "priority": 1,
+      "added_at": "2026-04-01T05:32:19.638139+00:00",
+      "source_topic": "Troubleshooting common issues with OBD2 scanners on Subaru vehicles"
+    },
+    {
+      "topic": "Troubleshooting common issues with OBD2 scanners on Subaru vehicles",
+      "priority": 1,
+      "added_at": "2026-04-01T05:32:19.638523+00:00",
+      "source_topic": "Troubleshooting common issues with OBD2 scanners on Subaru vehicles"
+    },
+    {
+      "topic": "Comparison of OBD2 scanner features and prices for Subaru owners",
+      "priority": 1,
+      "added_at": "2026-04-01T05:32:19.638925+00:00",
+      "source_topic": "Troubleshooting common issues with OBD2 scanners on Subaru vehicles"
+    },
+    {
+      "topic": "Subaru SSM3 and SSM4 software updates and compatibility",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:03.847467+00:00",
+      "source_topic": "Subaru SSM3/SSM4 software functionality"
+    },
+    {
+      "topic": "VXDIAG Subaru diagnostic tool reviews and comparisons",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:03.847611+00:00",
+      "source_topic": "Subaru SSM3/SSM4 software functionality"
+    },
+    {
+      "topic": "Subaru vehicle system diagnosis and repair using SSM3 and SSM4",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:03.847755+00:00",
+      "source_topic": "Subaru SSM3/SSM4 software functionality"
+    },
+    {
+      "topic": "VXDIAG VCX SE compatibility with other vehicle brands",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:29.117486+00:00",
+      "source_topic": "VXDIAG VCX SE for SUBARU compatibility with other vehicle brands"
+    },
+    {
+      "topic": "SSM3 and SSM4 software functionality for Subaru vehicles",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:29.117645+00:00",
+      "source_topic": "VXDIAG VCX SE for SUBARU compatibility with other vehicle brands"
+    },
+    {
+      "topic": "J2534 passthru device capabilities for OEM online programming",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:29.117801+00:00",
+      "source_topic": "VXDIAG VCX SE for SUBARU compatibility with other vehicle brands"
+    },
+    {
+      "topic": "Subaru vehicle compatibility with VXDIAG VCX SE",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:48.578144+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles using VXDIAG VCX SE"
+    },
+    {
+      "topic": "VXDIAG VCX SE software updates and versions for Subaru vehicles",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:48.578856+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles using VXDIAG VCX SE"
+    },
+    {
+      "topic": "Advanced diagnostic functions for Subaru vehicles using VXDIAG VCX SE",
+      "priority": 1,
+      "added_at": "2026-04-01T05:33:48.579424+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles using VXDIAG VCX SE"
+    },
+    {
+      "topic": "Subaru SSM3 and SSM4 compatibility with specific vehicle models",
+      "priority": 1,
+      "added_at": "2026-04-01T05:34:16.842207+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "J2534 device compatibility with SSM4",
+      "priority": 1,
+      "added_at": "2026-04-01T05:34:16.842783+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "Denso DST-i interface compatibility with SSM4",
+      "priority": 1,
+      "added_at": "2026-04-01T05:34:16.843403+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "VXDIAG Subaru software updates and compatibility",
+      "priority": 1,
+      "added_at": "2026-04-01T05:34:16.844021+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "Subaru Select Monitor IV system coverage and functionality",
+      "priority": 1,
+      "added_at": "2026-04-01T05:34:16.844607+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "Relationship between Subaru OBD2 system and other vehicle systems, such as transmission and braking",
+      "priority": 2,
+      "added_at": "2026-04-01T05:23:12.612956+00:00",
+      "source_topic": "Subaru factory service manual information for OBD2 and SSM systems"
+    },
+    {
+      "topic": "Detailed information on using the Subaru Factory Service Manual to diagnose and repair issues with the FA20DIT engine",
+      "priority": 2,
+      "added_at": "2026-04-01T05:23:12.613008+00:00",
+      "source_topic": "Subaru factory service manual information for OBD2 and SSM systems"
+    },
+    {
+      "topic": "Troubleshooting guides for OBD2 port and scanner issues in Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:06.327170+00:00",
+      "source_topic": "Subaru OBD2 system troubleshooting"
+    },
+    {
+      "topic": "Relationship between OBD2 system troubleshooting and CAN frame decoding for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:06.327771+00:00",
+      "source_topic": "Subaru OBD2 system troubleshooting"
+    },
+    {
+      "topic": "OBD2 trouble code definitions for 2004-2008 Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:06.328160+00:00",
+      "source_topic": "Subaru OBD2 system troubleshooting"
+    },
+    {
+      "topic": "OBD2 port troubleshooting for 2015-2019 Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:06.328419+00:00",
+      "source_topic": "Subaru OBD2 system troubleshooting"
+    },
+    {
+      "topic": "Common issues with OBD2 scanners for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:06.328654+00:00",
+      "source_topic": "Subaru OBD2 system troubleshooting"
+    },
+    {
+      "topic": "Electrical gremlin issues in Subaru radios and their potential impact on OBD2 ports",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:06.334668+00:00",
+      "source_topic": "Subaru OBD2 system troubleshooting"
+    },
+    {
+      "topic": "How to access and utilize the Subaru factory service manuals for specific models and years, such as the 2015-2019 Subaru",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:42.515595+00:00",
+      "source_topic": "Subaru Factory Service Manual contents"
+    },
+    {
+      "topic": "The relationship between CAN frame decoding and OBD2 trouble codes in Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:42.515652+00:00",
+      "source_topic": "Subaru Factory Service Manual contents"
+    },
+    {
+      "topic": "A comprehensive list of Subaru-specific OBD2 trouble codes and their corresponding repair procedures",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:42.515704+00:00",
+      "source_topic": "Subaru Factory Service Manual contents"
+    },
+    {
+      "topic": "The application of ScoobyCAN or similar tools in decoding CAN frames for various Subaru models and engines",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:42.515756+00:00",
+      "source_topic": "Subaru Factory Service Manual contents"
+    },
+    {
+      "topic": "Subaru factory service manual contents for 2015-2019 models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:42.515817+00:00",
+      "source_topic": "Subaru Factory Service Manual contents"
+    },
+    {
+      "topic": "Download sources for Subaru factory service manuals",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:42.516045+00:00",
+      "source_topic": "Subaru Factory Service Manual contents"
+    },
+    {
+      "topic": "Pricing for Subaru factory service manuals",
+      "priority": 2,
+      "added_at": "2026-04-01T05:24:42.516105+00:00",
+      "source_topic": "Subaru Factory Service Manual contents"
+    },
+    {
+      "topic": "Relationship between Subaru emission-related component monitoring and turbocharging system in FA20DIT engine",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:08.945106+00:00",
+      "source_topic": "Subaru emission-related component monitoring"
+    },
+    {
+      "topic": "Impact of throttle position sensor/switch 'A' circuit malfunction (P0120 code) on emission-related component monitoring",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:08.945175+00:00",
+      "source_topic": "Subaru emission-related component monitoring"
+    },
+    {
+      "topic": "Subaru OBD2 emission-related trouble codes",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:08.945240+00:00",
+      "source_topic": "Subaru emission-related component monitoring"
+    },
+    {
+      "topic": "SSM parameters for Subaru emission system monitoring",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:08.945301+00:00",
+      "source_topic": "Subaru emission-related component monitoring"
+    },
+    {
+      "topic": "Drive cycle requirements for Subaru emission testing",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:08.945362+00:00",
+      "source_topic": "Subaru emission-related component monitoring"
+    },
+    {
+      "topic": "Detailed mapping of SSM parameters to specific Subaru models and engine types",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:58.893194+00:00",
+      "source_topic": "Specific SSM parameter data for 2015-2019 Subaru models"
+    },
+    {
+      "topic": "Impact of DPF Regeneration Count on engine performance and maintenance schedules",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:58.893495+00:00",
+      "source_topic": "Specific SSM parameter data for 2015-2019 Subaru models"
+    },
+    {
+      "topic": "Integration of DMS Gesture ON/OFF Status with other vehicle systems and its effect on overall vehicle operation",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:58.893787+00:00",
+      "source_topic": "Specific SSM parameter data for 2015-2019 Subaru models"
+    },
+    {
+      "topic": "Comprehensive list of Subaru-specific OBD2 trouble codes and their relationships to SSM parameters",
+      "priority": 2,
+      "added_at": "2026-04-01T05:25:58.894122+00:00",
+      "source_topic": "Specific SSM parameter data for 2015-2019 Subaru models"
+    },
+    {
+      "topic": "SSM parameter data for Subaru models beyond 2015-2019",
+      "priority": 2,
+      "added_at": "2026-04-01T05:27:11.262973+00:00",
+      "source_topic": "Investigating SSM parameter data for other Subaru models and years"
+    },
+    {
+      "topic": "Detailed troubleshooting guides for specific Subaru OBD2 trouble codes",
+      "priority": 2,
+      "added_at": "2026-04-01T05:27:11.263045+00:00",
+      "source_topic": "Investigating SSM parameter data for other Subaru models and years"
+    },
+    {
+      "topic": "Comparison of CAN frame decoding tools like ScoobyCAN with other available options",
+      "priority": 2,
+      "added_at": "2026-04-01T05:27:11.263114+00:00",
+      "source_topic": "Investigating SSM parameter data for other Subaru models and years"
+    },
+    {
+      "topic": "Impact of throttle position sensor/switch 'A' circuit malfunction on overall vehicle performance and safety",
+      "priority": 2,
+      "added_at": "2026-04-01T05:27:11.263182+00:00",
+      "source_topic": "Investigating SSM parameter data for other Subaru models and years"
+    },
+    {
+      "topic": "Subaru SSM parameter data for 2015-2019 models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:27:11.263259+00:00",
+      "source_topic": "Investigating SSM parameter data for other Subaru models and years"
+    },
+    {
+      "topic": "OBD2 protocol implementation in Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:27:11.263332+00:00",
+      "source_topic": "Investigating SSM parameter data for other Subaru models and years"
+    },
+    {
+      "topic": "Technical Service Bulletins for Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:27:11.263405+00:00",
+      "source_topic": "Investigating SSM parameter data for other Subaru models and years"
+    },
+    {
+      "topic": "How to use the VXDIAG VCX SE Pro and Mucar 892BT to decode CAN frames for the FA20DIT engine",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:01.520599+00:00",
+      "source_topic": "Researching the use of OBD2 scanners for Subaru diagnostics"
+    },
+    {
+      "topic": "The relationship between bi-directional tests and ECU coding for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:01.520708+00:00",
+      "source_topic": "Researching the use of OBD2 scanners for Subaru diagnostics"
+    },
+    {
+      "topic": "A comprehensive list of Subaru manufacturer-specific OBD2 trouble codes and their descriptions",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:01.520782+00:00",
+      "source_topic": "Researching the use of OBD2 scanners for Subaru diagnostics"
+    },
+    {
+      "topic": "The capabilities and limitations of the Autel Scanner MaxiCOM MK808S for Subaru diagnostics",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:01.520856+00:00",
+      "source_topic": "Researching the use of OBD2 scanners for Subaru diagnostics"
+    },
+    {
+      "topic": "Subaru-specific DPF regeneration procedures",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:38.534906+00:00",
+      "source_topic": "Exploring the relationship between DPF Regeneration Count and vehicle maintenance"
+    },
+    {
+      "topic": "Relationship between DPF regeneration and Subaru OBD2 trouble codes",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:38.534991+00:00",
+      "source_topic": "Exploring the relationship between DPF Regeneration Count and vehicle maintenance"
+    },
+    {
+      "topic": "Effectiveness of motorway driving for DPF regeneration in Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:38.535069+00:00",
+      "source_topic": "Exploring the relationship between DPF Regeneration Count and vehicle maintenance"
+    },
+    {
+      "topic": "DPF regeneration strategies for Subaru diesel engines",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:38.535155+00:00",
+      "source_topic": "Exploring the relationship between DPF Regeneration Count and vehicle maintenance"
+    },
+    {
+      "topic": "Impact of oil type on DPF performance",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:38.535239+00:00",
+      "source_topic": "Exploring the relationship between DPF Regeneration Count and vehicle maintenance"
+    },
+    {
+      "topic": "Relationship between driving habits and DPF maintenance",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:38.535322+00:00",
+      "source_topic": "Exploring the relationship between DPF Regeneration Count and vehicle maintenance"
+    },
+    {
+      "topic": "Detailed information on how to use the Denso DST-010 interface with Subaru SSM-III software",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:58.910584+00:00",
+      "source_topic": "Subaru Select Monitor (SSM) protocol details"
+    },
+    {
+      "topic": "Relationship between SSM-III software and existing OBD2 trouble code definitions for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:58.910803+00:00",
+      "source_topic": "Subaru Select Monitor (SSM) protocol details"
+    },
+    {
+      "topic": "Compatibility of ScoobyCAN tool with Denso DST-010 interface and Subaru SSM-III software",
+      "priority": 2,
+      "added_at": "2026-04-01T05:28:58.911044+00:00",
+      "source_topic": "Subaru Select Monitor (SSM) protocol details"
+    },
+    {
+      "topic": "In-depth analysis of CAN frame decoding for FA20DIT engine",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:19.794269+00:00",
+      "source_topic": "Comparison of OBD2 scanners for Subaru models"
+    },
+    {
+      "topic": "Comparison of OBD2 scanner features and compatibility for Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:19.794363+00:00",
+      "source_topic": "Comparison of OBD2 scanners for Subaru models"
+    },
+    {
+      "topic": "Relationship between OBD2 trouble codes and Subaru-specific sensor systems",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:19.794454+00:00",
+      "source_topic": "Comparison of OBD2 scanners for Subaru models"
+    },
+    {
+      "topic": "Detailed troubleshooting guides for common Subaru OBD2 trouble codes",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:19.794543+00:00",
+      "source_topic": "Comparison of OBD2 scanners for Subaru models"
+    },
+    {
+      "topic": "Specific SSM3/SSM4 software capabilities and limitations",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:52.926153+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles"
+    },
+    {
+      "topic": "Detailed comparison of VXDIAG VCX SE for SUBARU and ScoobyCAN functionalities",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:52.926493+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles"
+    },
+    {
+      "topic": "List of all supported 35+ service functions by VXDIAG VCX SE for SUBARU",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:52.926816+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles"
+    },
+    {
+      "topic": "Compatibility of VXDIAG VCX SE for SUBARU with other Subaru models and engine types",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:52.927181+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles"
+    },
+    {
+      "topic": "Troubleshooting guides for common issues with the FA20DIT engine and 2015-2019 Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:29:52.927507+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles"
+    },
+    {
+      "topic": "Specific SSM parameter data for a 2015-2019 Subaru",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:17.990223+00:00",
+      "source_topic": "Subaru SSM-IV diagnostic programming software"
+    },
+    {
+      "topic": "Detailed information on how to use the SSM-IV software to diagnose and troubleshoot OBD2 trouble codes",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:17.990544+00:00",
+      "source_topic": "Subaru SSM-IV diagnostic programming software"
+    },
+    {
+      "topic": "Compatibility of the Denso DST-010 interface with older Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:17.990856+00:00",
+      "source_topic": "Subaru SSM-IV diagnostic programming software"
+    },
+    {
+      "topic": "Relationship between the SSM-IV software and other diagnostic tools like ScoobyCAN",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:17.991203+00:00",
+      "source_topic": "Subaru SSM-IV diagnostic programming software"
+    },
+    {
+      "topic": "Specific parameters and data available through the Denso DST-010 interface for 2015-2019 Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:38.003350+00:00",
+      "source_topic": "Denso DST-010 interface compatibility with other vehicle models"
+    },
+    {
+      "topic": "Detailed troubleshooting guides for common issues in 2015-2019 Subaru models using the Denso DST-010 and SSM",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:38.003465+00:00",
+      "source_topic": "Denso DST-010 interface compatibility with other vehicle models"
+    },
+    {
+      "topic": "Comparison of the Denso DST-010 with other diagnostic tools for Subaru vehicles, such as ScoobyCAN",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:38.003808+00:00",
+      "source_topic": "Denso DST-010 interface compatibility with other vehicle models"
+    },
+    {
+      "topic": "Specific SSM parameter data for 2015-2019 Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:57.559161+00:00",
+      "source_topic": "VXDIAG Multi Diagnostic Tool capabilities and limitations"
+    },
+    {
+      "topic": "Detailed capabilities and limitations of the VXDIAG Multi Diagnostic Tool for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:57.559282+00:00",
+      "source_topic": "VXDIAG Multi Diagnostic Tool capabilities and limitations"
+    },
+    {
+      "topic": "Comparison of VXDIAG Multi Diagnostic Tool with other diagnostic tools such as ScoobyCAN for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:30:57.559396+00:00",
+      "source_topic": "VXDIAG Multi Diagnostic Tool capabilities and limitations"
+    },
+    {
+      "topic": "Specific OBD2 parameter data for the 2015-2019 Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:31:30.622925+00:00",
+      "source_topic": "Comparison of OBD2 scanner compatibility with different Subaru models"
+    },
+    {
+      "topic": "Comparison of Innova 5610 and Bluedriver performance and features for Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:31:30.623059+00:00",
+      "source_topic": "Comparison of OBD2 scanner compatibility with different Subaru models"
+    },
+    {
+      "topic": "Detailed information on how ScoobyCAN and Innova OBD2 scanners can be used together for comprehensive diagnosis and repair of Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:31:30.623180+00:00",
+      "source_topic": "Comparison of OBD2 scanner compatibility with different Subaru models"
+    },
+    {
+      "topic": "Specific SSM parameter data for the 2015-2019 Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:31:57.274058+00:00",
+      "source_topic": "Review of OBD2 scanner features and pricing for Subaru owners"
+    },
+    {
+      "topic": "Detailed comparison of the features and pricing of different OBD2 scanners for Subaru owners",
+      "priority": 2,
+      "added_at": "2026-04-01T05:31:57.274418+00:00",
+      "source_topic": "Review of OBD2 scanner features and pricing for Subaru owners"
+    },
+    {
+      "topic": "Information on how to use the OBD2 scanners to decode CAN frames for the FA20DIT engine",
+      "priority": 2,
+      "added_at": "2026-04-01T05:31:57.274759+00:00",
+      "source_topic": "Review of OBD2 scanner features and pricing for Subaru owners"
+    },
+    {
+      "topic": "Relationship between the OBD2 trouble codes and the Subaru manufacturer-specific parameters",
+      "priority": 2,
+      "added_at": "2026-04-01T05:31:57.275134+00:00",
+      "source_topic": "Review of OBD2 scanner features and pricing for Subaru owners"
+    },
+    {
+      "topic": "Detailed information about the compatibility of specific OBD2 scanners with 2015-2019 Subaru models",
+      "priority": 2,
+      "added_at": "2026-04-01T05:32:19.636596+00:00",
+      "source_topic": "Troubleshooting common issues with OBD2 scanners on Subaru vehicles"
+    },
+    {
+      "topic": "A comprehensive list of Subaru-specific OBD2 trouble codes and their corresponding descriptions",
+      "priority": 2,
+      "added_at": "2026-04-01T05:32:19.637006+00:00",
+      "source_topic": "Troubleshooting common issues with OBD2 scanners on Subaru vehicles"
+    },
+    {
+      "topic": "Information about the relationship between CAN frames decoding and OBD2 trouble codes for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:32:19.637368+00:00",
+      "source_topic": "Troubleshooting common issues with OBD2 scanners on Subaru vehicles"
+    },
+    {
+      "topic": "The process of troubleshooting common issues with OBD2 scanners on Subaru vehicles, including step-by-step guides and potential solutions",
+      "priority": 2,
+      "added_at": "2026-04-01T05:32:19.637723+00:00",
+      "source_topic": "Troubleshooting common issues with OBD2 scanners on Subaru vehicles"
+    },
+    {
+      "topic": "Specific OBD2 parameter data for the 2015-2019 Subaru",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:03.846899+00:00",
+      "source_topic": "Subaru SSM3/SSM4 software functionality"
+    },
+    {
+      "topic": "Detailed information about the reprogramming capabilities of SSM3 and SSM4",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:03.847044+00:00",
+      "source_topic": "Subaru SSM3/SSM4 software functionality"
+    },
+    {
+      "topic": "Comparison of the features and functionalities of SSM3 and SSM4",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:03.847180+00:00",
+      "source_topic": "Subaru SSM3/SSM4 software functionality"
+    },
+    {
+      "topic": "List of all supported Subaru vehicles and their corresponding engine types for SSM3 and SSM4",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:03.847317+00:00",
+      "source_topic": "Subaru SSM3/SSM4 software functionality"
+    },
+    {
+      "topic": "Detailed information on using the VXDIAG VCX SE for Subaru OEM online programming",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:29.116826+00:00",
+      "source_topic": "VXDIAG VCX SE for SUBARU compatibility with other vehicle brands"
+    },
+    {
+      "topic": "Comparison of VXDIAG VCX SE with other diagnostic tools for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:29.117018+00:00",
+      "source_topic": "VXDIAG VCX SE for SUBARU compatibility with other vehicle brands"
+    },
+    {
+      "topic": "Troubleshooting guides for common issues with the FA20DIT engine in Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:29.117169+00:00",
+      "source_topic": "VXDIAG VCX SE for SUBARU compatibility with other vehicle brands"
+    },
+    {
+      "topic": "Information on updating and reprogramming Subaru vehicle systems using the VXDIAG VCX SE",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:29.117321+00:00",
+      "source_topic": "VXDIAG VCX SE for SUBARU compatibility with other vehicle brands"
+    },
+    {
+      "topic": "Detailed information on how to use VXDIAG VCX SE for diagnostic, programming, and coding functions on Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:48.576976+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles using VXDIAG VCX SE"
+    },
+    {
+      "topic": "Relationship between VXDIAG VCX SE and other diagnostic tools like ScoobyCAN for Subaru vehicles",
+      "priority": 2,
+      "added_at": "2026-04-01T05:33:48.577563+00:00",
+      "source_topic": "Advanced diagnostic functions for Subaru vehicles using VXDIAG VCX SE"
+    },
+    {
+      "topic": "Exact list of Subaru SSM3/SSM4 parameters (sensor IDs, scaling, units) for model years 2015‑2019.",
+      "priority": 2,
+      "added_at": "2026-04-01T05:34:16.839247+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "Mapping of SSM4 hardware requirements (DST‑i vs generic J2534) to specific Subaru models released after 2016.",
+      "priority": 2,
+      "added_at": "2026-04-01T05:34:16.839817+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "Integration workflow for using VXDIAG software together with ScoobyCAN to decode FA20DIT engine CAN frames.",
+      "priority": 2,
+      "added_at": "2026-04-01T05:34:16.840398+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "Verification whether SSM3 can still communicate with 2016 models that are also SSM4‑compatible, and any functional differences.",
+      "priority": 2,
+      "added_at": "2026-04-01T05:34:16.840998+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
+    },
+    {
+      "topic": "Comprehensive cross‑reference of manufacturer‑specific OBD2 trouble codes (e.g., P2A04, P2BA8) with SSM parameter IDs for 2015‑2019 Subarus.",
+      "priority": 2,
+      "added_at": "2026-04-01T05:34:16.841578+00:00",
+      "source_topic": "Subaru SSM-IV compatibility with newer vehicle models"
     },
     {
       "topic": "FA20DIT engine performance optimization using OBD2 and SSM data",
@@ -42,7 +762,28 @@
     "Engine control system malfunctions in 2015-2019 Subaru models",
     "Subaru P0120 throttle position sensor replacement",
     "2015-2019 Subaru OBD2 parameters",
-    "Comparison of OBD2 and SSM parameter data for Subaru vehicles"
+    "Comparison of OBD2 and SSM parameter data for Subaru vehicles",
+    "Subaru factory service manual information for OBD2 and SSM systems",
+    "Subaru OBD2 system troubleshooting",
+    "Subaru Factory Service Manual contents",
+    "Subaru emission-related component monitoring",
+    "Specific SSM parameter data for 2015-2019 Subaru models",
+    "Investigating SSM parameter data for other Subaru models and years",
+    "Researching the use of OBD2 scanners for Subaru diagnostics",
+    "Exploring the relationship between DPF Regeneration Count and vehicle maintenance",
+    "Subaru Select Monitor (SSM) protocol details",
+    "Comparison of OBD2 scanners for Subaru models",
+    "Advanced diagnostic functions for Subaru vehicles",
+    "Subaru SSM-IV diagnostic programming software",
+    "Denso DST-010 interface compatibility with other vehicle models",
+    "VXDIAG Multi Diagnostic Tool capabilities and limitations",
+    "Comparison of OBD2 scanner compatibility with different Subaru models",
+    "Review of OBD2 scanner features and pricing for Subaru owners",
+    "Troubleshooting common issues with OBD2 scanners on Subaru vehicles",
+    "Subaru SSM3/SSM4 software functionality",
+    "VXDIAG VCX SE for SUBARU compatibility with other vehicle brands",
+    "Advanced diagnostic functions for Subaru vehicles using VXDIAG VCX SE",
+    "Subaru SSM-IV compatibility with newer vehicle models"
   ],
   "visited_urls": [
     "https://www.car-inform.com/subaru-engines/fa20dit-engine/",
@@ -269,10 +1010,96 @@
     "https://en.wikipedia.org/wiki/OBD-II_PIDs",
     "https://www.csselectronics.com/pages/obd2-pid-table-on-board-diagnostics-j1979",
     "https://www.subaruoutback.org/threads/logging-ecu-data-for-2-5-non-turbo-what-about-iam-what-value-do-you-have.254522/",
-    "https://www.subaruoutback.org/threads/freessm-complete-access-to-your-ecm-and-tcu.39426/page-47"
+    "https://www.subaruoutback.org/threads/freessm-complete-access-to-your-ecm-and-tcu.39426/page-47",
+    "https://igspgm.com/ssm/Subaru-On-Board-Diagnostic-Systems-OBD-I.pdf",
+    "https://www.subaruoutback.org/threads/diy-manuals-and-tools.248993/",
+    "https://static.nhtsa.gov/odi/tsbs/2025/MC-11025796-0001.pdf",
+    "https://www.scribd.com/doc/129412058/Subaru-Forester-2001-Service-factory-Manual",
+    "https://www.subaruoutback.org/threads/obd2-port-not-working-and-fuses-are-fine.45741/",
+    "https://automotivetechinfo.com/1998/10/subaru-on-board-diagnostic-systems-obd-1/",
+    "https://www.subaruforester.org/threads/obd2-scanner-not-working.578490/",
+    "https://www.reddit.com/r/Subaru_Outback/comments/1cax5ft/help_with_obd_codes/",
+    "https://techinfo.subaru.com/",
+    "https://www.subaruoutback.org/threads/source-s-for-factory-service-manuals.554850/",
+    "https://www.ultimatesubaru.org/forum/topic/167667-factory-service-manual/",
+    "https://www.facebook.com/groups/subarumechanics/posts/3823770224578901/",
+    "https://www.competitionsubaru.com/how-to-know-if-you-have-a-subaru-emission-system-issue/",
+    "https://www.whitebearsubaru.com/subaru-warning-lights/?srsltid=AfmBOopmtN_lpkktILHBWD1s-bhEMp8ZqhDMNfQzHBmc5HjwoNITcwdA",
+    "https://www.facebook.com/groups/subarumechanics/posts/4306519869637265/",
+    "https://automotivetechinfo.com/2000/02/subaru-evaporative-emissions-testing/",
+    "https://forum.autosportlabs.com/viewtopic.php?t=5936",
+    "https://subaru.oemdtc.com/3059/driver-monitoring-system-dms-diagnostic-information-2019-2021-subaru",
+    "https://www.subaruoutback.org/threads/vdc-parameter-issue-ssm.536430/",
+    "https://www.subaruoutback.org/threads/acronyms-used-in-posts.570843/page-2",
+    "https://www.microtopia.org/climate-change-time-and-tech",
+    "https://www.carcomplaints.com/Subaru/Legacy/2015/tsbs/index.shtml",
+    "http://www.rebirthgames.com/daxayk/tssm-chemistry.html",
+    "https://www.carcomplaints.com/Lincoln/MKX/2016/tsbs/index.shtml",
+    "https://obdadvisor.com/best-subaru-scanners-review/",
+    "https://iamcarhacker.com/best-obd2-scanners-for-subaru/",
+    "https://mechanicinsider.com/best-obd2-scanner-for-subaru/",
+    "https://themarketfront.com/best-obd2-scanners-for-subaru/",
+    "https://www.discosportforums.co.uk/threads/dpf-oil-dilution-investigations.9794/page-3",
+    "https://faracerv.com/blog/diesel-rv-maintenance-schedule-southern-ca/",
+    "https://britishauthor.uk/the-essential-uk-guide-to-ford-transit-engines-maintenance-specs-replacement/",
+    "https://www.pensketruckleasing.com/tag/truck-maintenance",
+    "https://www.obd2eshop.com/wholesale/vxdiag-subaru-ssm-iii-multi-diagnostic-tool-wifi.html",
+    "https://www.ecuprogramer.com/sale-457206-v2020-7-subaru-ssm-iii-software-license-for-vxdiag-multi-diagnostic-tool.htm",
+    "https://diagnoex.com/products/denso-dst-010-interface-subaru-dealer-scan-tool",
+    "http://www.auto-diagnosis.org/tag/vxdiag-subaru-ssm-iii/",
+    "https://multimeterworld.com/best-obd2-scanner-for-subaru/",
+    "https://carrepairmag.com/obd2-scanner-for-subaru/",
+    "https://carsbibles.com/obd2-scanner-subaru/",
+    "https://texasdiamondgarage.com/best-obd-scanner-for-subaru/",
+    "https://mechanicinsider.com/best-scan-tool-for-subaru/",
+    "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+    "https://cartuneandtire.com/best-scan-tool-for-subaru/",
+    "https://carstechie.com/best-scan-tool-for-subaru/",
+    "https://ohiodiagnostics.com/subaru/",
+    "https://autogmt.com/threads/subaru-software-suite-ssm3-ssm4-flashwrite2.2193/",
+    "https://m2kinc.com/product/subaru-select-monitor-4-ssm4-package/",
+    "https://diagnoex.com/products/subaru-ssm-denso-dst-010-diagnostic-pro-package",
+    "https://www.obd2sales.com/product/denso-dst010-vci/",
+    "https://www.ds3.denso.co.jp/SIHAN/DN-DST-010/en/spec/index.html",
+    "https://www.manualslib.com/manual/3886566/Denso-Dn-Dst-010.html",
+    "https://www.alicar.com/Newest-DENSO-DST-010-A-Car-Diagnostic-Tool-for-Toyota-Honda-Subaru-Mazda-DoIP-J2534-Supported-p28818796.html",
+    "https://www.obdtools.net/goods-932-vxdiag-multi-diagnostic-tool-for-full-brands.html",
+    "https://www.obdtools.net/goods-1424-vxdiag-vcx-nano-rvdiag-for-renault.html",
+    "https://www.cardiagtool.co.uk/vxdiag-multi-diagnostic-tool-for-full-brands.html",
+    "https://vxdiag.com/blogs/blog/everything-you-need-to-know-about-vxdiag-in-one-article",
+    "https://www.innova.com/pages/obd2-subaru?srsltid=AfmBOoqlQ5pmSpQy64d17wEm3IArwFQFXrAJaL8NTksj-ox1wZtZ0B1q",
+    "https://www.facebook.com/groups/subaruforestergroup/posts/1250107690009133/",
+    "https://www.subaruoutback.org/threads/what-code-reader-to-buy.578330/",
+    "https://www.subaruforester.org/threads/obd2-scanner-recommendations-merged-thread.848048/",
+    "https://www.youtube.com/watch?v=81OJWVLA32c",
+    "https://www.tomsguide.com/best-picks/best-obd2-scanners",
+    "https://www.tiktok.com/discover/topdon-obd2-scanner-bluetooth",
+    "https://vtsautoworld.com/ancel-bd200-obd2-scanner-bluetooth-review/",
+    "https://www.tiktok.com/discover/how-to-use-obd2-scanner-subaru-sti",
+    "https://gmundcars.com/best-obd2-scanners-for-subaru-forester/",
+    "https://tech9autorepair.com/are-obd2-scanners-accurate/",
+    "https://www.klavkarr.com/vehicle-list-compatible-obd2/subaru",
+    "http://blog.obdii365.com/2020/12/10/free-download-subaru-ssm4-v2020-7-software-and-patch/",
+    "http://blog.obdii365.com/2022/02/09/download-install-and-activate-v2022-01-vxdiag-subaru-ssm3-ssm4/",
+    "http://blog.obdii365.com/2019/06/24/set-up-2018-10-vxdiag-subaru-ssm3-software-on-windows-7/",
+    "https://www.obd2sales.com/product/vxdiag-subaru-diagnostic-tool/",
+    "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru?srsltid=AfmBOoq7YNKZdgCXepTyJ0HCMngtJSEZg5yJd71I_p70FhZa3wQQpQRW",
+    "https://www.vxdiagshop.com/info/catalog/?srsltid=AfmBOoq8YDmNuRRh1O2WxnSaXZ8q6BaT2q9LvwdDq9sPL5GO3_Gqol-3",
+    "https://www.newegg.com/p/0AF-01JZ-00005?srsltid=AfmBOopIpg3L2wFnqd2lumgGLjOd6ka7PTGiU0JJVXyiDH6agngNQrx-",
+    "https://vxdiag.com/pages/vxdiag-vcx-series-product-comparison?srsltid=AfmBOorruz5G1r4P9X8RyyTTnLtpFlHQ06A2MfMUnPRVF3ccGLkwYv4g",
+    "https://www.vxdiagshop.com/wholesale/vxdiag-vcx-se-for-benz-doip-with-hdd.html",
+    "https://vxdiag.com/products/vxdiag-vcx-se-for-mercedes-benz",
+    "https://acartool.com/tr/products/vxdiag-vcx-se-pro-3-in-1-diagnostic-tool",
+    "https://vxdiagshop.blogspot.com/2025/01/use-vxdiag-vcx-se-with-launch-smartlink.html",
+    "https://www.subaruxvforum.com/threads/techstream-for-subaru.191543/",
+    "http://blog.vxdiagshop.com/2020/01/22/vxdiag-subaru-software-compatible-ssm3-or-ssm4/",
+    "https://ohiodiagnostics.weebly.com/ohiodiagnostics-llc.html",
+    "http://blog.obdii365.com/2023/07/04/how-to-set-up-subaru-ssm4-with-j2534-device/"
   ],
   "dry_topics": {
-    "decoding can frames for the fa20dit engine": 1
+    "decoding can frames for the fa20dit engine": 1,
+    "subaru emission-related component monitoring": 1,
+    "investigating ssm parameter data for other subaru models and years": 1
   },
   "follow_up_mentions": {
     "decoding can frames for the fa20dit engine": 1,
@@ -290,7 +1117,7 @@
     "subaru p0120 throttle position sensor replacement": 1,
     "subaru p0120 wiring harness repair": 1,
     "subaru throttle body cleaning and maintenance": 1,
-    "specific ssm parameter data for 2015-2019 subaru vehicles": 1,
+    "specific ssm parameter data for 2015-2019 subaru vehicles": 2,
     "detailed troubleshooting procedures for tumble generator valve position sensor circuit issues in subaru vehicles": 1,
     "interactions between tumble generator valve position sensor circuit issues and other engine systems in subaru vehicles": 1,
     "tgv valve replacement cost": 1,
@@ -303,7 +1130,7 @@
     "2015-2019 subaru outback cruise control system reliability": 1,
     "subaru outback vehicle speed control system safety concerns": 1,
     "throttle position sensor replacement procedure for other subaru models": 1,
-    "specific ssm parameter data for 2015-2019 subaru models": 1,
+    "specific ssm parameter data for 2015-2019 subaru models": 4,
     "relationship between throttle position sensor and other engine systems in 2015-2019 subaru models": 1,
     "subaru p0120 throttle position sensor location": 1,
     "subaru throttle position sensor calibration": 1,
@@ -319,9 +1146,145 @@
     "detailed mapping of ssm commands to specific ecu/tcu parameters for 2015‑2019 subaru models.": 1,
     "procedures and tool support for converting an obd1‑only subaru to obd2, including required ecu or engine changes.": 1,
     "comparison of data access depth between obd2 standard pids and subaru select monitor protocol (ssm) for the same vehicle generation.": 1,
-    "subaru select monitor (ssm) protocol details": 1,
+    "subaru select monitor (ssm) protocol details": 2,
     "obd1 to obd2 upgrade process for subaru vehicles": 1,
-    "comparison of ssm and obd2 parameter data for subaru vehicles": 1
+    "comparison of ssm and obd2 parameter data for subaru vehicles": 1,
+    "relationship between subaru obd2 system and other vehicle systems, such as transmission and braking": 1,
+    "detailed information on using the subaru factory service manual to diagnose and repair issues with the fa20dit engine": 1,
+    "subaru obd2 system troubleshooting": 1,
+    "subaru factory service manual contents": 1,
+    "subaru emission-related component monitoring": 1,
+    "troubleshooting guides for obd2 port and scanner issues in subaru vehicles": 1,
+    "relationship between obd2 system troubleshooting and can frame decoding for subaru vehicles": 1,
+    "obd2 trouble code definitions for 2004-2008 subaru models": 1,
+    "obd2 port troubleshooting for 2015-2019 subaru models": 1,
+    "common issues with obd2 scanners for subaru vehicles": 1,
+    "electrical gremlin issues in subaru radios and their potential impact on obd2 ports": 1,
+    "how to access and utilize the subaru factory service manuals for specific models and years, such as the 2015-2019 subaru": 1,
+    "the relationship between can frame decoding and obd2 trouble codes in subaru vehicles": 1,
+    "a comprehensive list of subaru-specific obd2 trouble codes and their corresponding repair procedures": 1,
+    "the application of scoobycan or similar tools in decoding can frames for various subaru models and engines": 1,
+    "subaru factory service manual contents for 2015-2019 models": 1,
+    "download sources for subaru factory service manuals": 1,
+    "pricing for subaru factory service manuals": 1,
+    "relationship between subaru emission-related component monitoring and turbocharging system in fa20dit engine": 1,
+    "impact of throttle position sensor/switch 'a' circuit malfunction (p0120 code) on emission-related component monitoring": 1,
+    "subaru obd2 emission-related trouble codes": 1,
+    "ssm parameters for subaru emission system monitoring": 1,
+    "drive cycle requirements for subaru emission testing": 1,
+    "detailed mapping of ssm parameters to specific subaru models and engine types": 1,
+    "impact of dpf regeneration count on engine performance and maintenance schedules": 1,
+    "integration of dms gesture on/off status with other vehicle systems and its effect on overall vehicle operation": 1,
+    "comprehensive list of subaru-specific obd2 trouble codes and their relationships to ssm parameters": 1,
+    "investigating ssm parameter data for other subaru models and years": 1,
+    "researching the use of obd2 scanners for subaru diagnostics": 1,
+    "exploring the relationship between dpf regeneration count and vehicle maintenance": 1,
+    "ssm parameter data for subaru models beyond 2015-2019": 1,
+    "detailed troubleshooting guides for specific subaru obd2 trouble codes": 1,
+    "comparison of can frame decoding tools like scoobycan with other available options": 1,
+    "impact of throttle position sensor/switch 'a' circuit malfunction on overall vehicle performance and safety": 1,
+    "subaru ssm parameter data for 2015-2019 models": 1,
+    "obd2 protocol implementation in subaru vehicles": 1,
+    "technical service bulletins for subaru models": 1,
+    "how to use the vxdiag vcx se pro and mucar 892bt to decode can frames for the fa20dit engine": 1,
+    "the relationship between bi-directional tests and ecu coding for subaru vehicles": 1,
+    "a comprehensive list of subaru manufacturer-specific obd2 trouble codes and their descriptions": 1,
+    "the capabilities and limitations of the autel scanner maxicom mk808s for subaru diagnostics": 1,
+    "comparison of obd2 scanners for subaru models": 1,
+    "advanced diagnostic functions for subaru vehicles": 1,
+    "subaru-specific dpf regeneration procedures": 1,
+    "relationship between dpf regeneration and subaru obd2 trouble codes": 1,
+    "effectiveness of motorway driving for dpf regeneration in subaru vehicles": 1,
+    "dpf regeneration strategies for subaru diesel engines": 1,
+    "impact of oil type on dpf performance": 1,
+    "relationship between driving habits and dpf maintenance": 1,
+    "detailed information on how to use the denso dst-010 interface with subaru ssm-iii software": 1,
+    "relationship between ssm-iii software and existing obd2 trouble code definitions for subaru vehicles": 1,
+    "compatibility of scoobycan tool with denso dst-010 interface and subaru ssm-iii software": 1,
+    "subaru ssm-iv diagnostic programming software": 1,
+    "denso dst-010 interface compatibility with other vehicle models": 1,
+    "vxdiag multi diagnostic tool capabilities and limitations": 1,
+    "in-depth analysis of can frame decoding for fa20dit engine": 1,
+    "comparison of obd2 scanner features and compatibility for subaru models": 1,
+    "relationship between obd2 trouble codes and subaru-specific sensor systems": 1,
+    "detailed troubleshooting guides for common subaru obd2 trouble codes": 1,
+    "comparison of obd2 scanner compatibility with different subaru models": 1,
+    "review of obd2 scanner features and pricing for subaru owners": 1,
+    "troubleshooting common issues with obd2 scanners on subaru vehicles": 2,
+    "specific ssm3/ssm4 software capabilities and limitations": 1,
+    "detailed comparison of vxdiag vcx se for subaru and scoobycan functionalities": 1,
+    "list of all supported 35+ service functions by vxdiag vcx se for subaru": 1,
+    "compatibility of vxdiag vcx se for subaru with other subaru models and engine types": 1,
+    "troubleshooting guides for common issues with the fa20dit engine and 2015-2019 subaru vehicles": 1,
+    "subaru ssm3/ssm4 software functionality": 1,
+    "vxdiag vcx se for subaru compatibility with other vehicle brands": 1,
+    "advanced diagnostic functions for subaru vehicles using vxdiag vcx se": 2,
+    "specific ssm parameter data for a 2015-2019 subaru": 1,
+    "detailed information on how to use the ssm-iv software to diagnose and troubleshoot obd2 trouble codes": 1,
+    "compatibility of the denso dst-010 interface with older subaru models": 1,
+    "relationship between the ssm-iv software and other diagnostic tools like scoobycan": 1,
+    "subaru ssm-iv compatibility with newer vehicle models": 1,
+    "denso dst-010 interface functionality and limitations": 1,
+    "subaru select monitor ssm kit pricing and availability": 1,
+    "ssm-iv software updates and subscription models": 1,
+    "comparison of ssm-iv with other diagnostic tools for subaru vehicles": 1,
+    "specific parameters and data available through the denso dst-010 interface for 2015-2019 subaru models": 1,
+    "detailed troubleshooting guides for common issues in 2015-2019 subaru models using the denso dst-010 and ssm": 1,
+    "comparison of the denso dst-010 with other diagnostic tools for subaru vehicles, such as scoobycan": 1,
+    "denso dst-010 compatibility with other vehicle models": 1,
+    "doip high-speed communication protocol": 1,
+    "sae j2534 passthru protocol": 1,
+    "detailed capabilities and limitations of the vxdiag multi diagnostic tool for subaru vehicles": 1,
+    "comparison of vxdiag multi diagnostic tool with other diagnostic tools such as scoobycan for subaru vehicles": 1,
+    "vxdiag multi diagnostic tool compatibility with 2015-2019 subaru models": 1,
+    "vxdiag multi diagnostic tool capabilities for subaru fault diagnosis and repair": 1,
+    "comparison of vxdiag multi diagnostic tool with other diagnostic tools for subaru": 1,
+    "specific obd2 parameter data for the 2015-2019 subaru models": 1,
+    "comparison of innova 5610 and bluedriver performance and features for subaru models": 1,
+    "detailed information on how scoobycan and innova obd2 scanners can be used together for comprehensive diagnosis and repair of subaru vehicles": 1,
+    "comparison of innova obd2 scanners with other brands for subaru models": 1,
+    "evaluation of bluedriver's performance and compatibility with subaru vehicles": 1,
+    "investigation of obd2 scanner requirements for pre-canbus subarus": 1,
+    "specific ssm parameter data for the 2015-2019 subaru models": 1,
+    "detailed comparison of the features and pricing of different obd2 scanners for subaru owners": 1,
+    "information on how to use the obd2 scanners to decode can frames for the fa20dit engine": 1,
+    "relationship between the obd2 trouble codes and the subaru manufacturer-specific parameters": 1,
+    "review of ancel bd200 obd2 scanner for subaru owners": 1,
+    "topdon topscan vs innova 5610: which is better for subaru diagnostics": 1,
+    "detailed information about the compatibility of specific obd2 scanners with 2015-2019 subaru models": 1,
+    "a comprehensive list of subaru-specific obd2 trouble codes and their corresponding descriptions": 1,
+    "information about the relationship between can frames decoding and obd2 trouble codes for subaru vehicles": 1,
+    "the process of troubleshooting common issues with obd2 scanners on subaru vehicles, including step-by-step guides and potential solutions": 1,
+    "obd2 scanner compatibility with specific subaru models": 1,
+    "comparison of obd2 scanner features and prices for subaru owners": 1,
+    "specific obd2 parameter data for the 2015-2019 subaru": 2,
+    "detailed information about the reprogramming capabilities of ssm3 and ssm4": 1,
+    "comparison of the features and functionalities of ssm3 and ssm4": 1,
+    "list of all supported subaru vehicles and their corresponding engine types for ssm3 and ssm4": 1,
+    "subaru ssm3 and ssm4 software updates and compatibility": 1,
+    "vxdiag subaru diagnostic tool reviews and comparisons": 1,
+    "subaru vehicle system diagnosis and repair using ssm3 and ssm4": 1,
+    "detailed information on using the vxdiag vcx se for subaru oem online programming": 1,
+    "comparison of vxdiag vcx se with other diagnostic tools for subaru vehicles": 1,
+    "troubleshooting guides for common issues with the fa20dit engine in subaru vehicles": 1,
+    "information on updating and reprogramming subaru vehicle systems using the vxdiag vcx se": 1,
+    "vxdiag vcx se compatibility with other vehicle brands": 1,
+    "ssm3 and ssm4 software functionality for subaru vehicles": 1,
+    "j2534 passthru device capabilities for oem online programming": 1,
+    "detailed information on how to use vxdiag vcx se for diagnostic, programming, and coding functions on subaru vehicles": 1,
+    "relationship between vxdiag vcx se and other diagnostic tools like scoobycan for subaru vehicles": 1,
+    "subaru vehicle compatibility with vxdiag vcx se": 1,
+    "vxdiag vcx se software updates and versions for subaru vehicles": 1,
+    "exact list of subaru ssm3/ssm4 parameters (sensor ids, scaling, units) for model years 2015‑2019.": 1,
+    "mapping of ssm4 hardware requirements (dst‑i vs generic j2534) to specific subaru models released after 2016.": 1,
+    "integration workflow for using vxdiag software together with scoobycan to decode fa20dit engine can frames.": 1,
+    "verification whether ssm3 can still communicate with 2016 models that are also ssm4‑compatible, and any functional differences.": 1,
+    "comprehensive cross‑reference of manufacturer‑specific obd2 trouble codes (e.g., p2a04, p2ba8) with ssm parameter ids for 2015‑2019 subarus.": 1,
+    "subaru ssm3 and ssm4 compatibility with specific vehicle models": 1,
+    "j2534 device compatibility with ssm4": 1,
+    "denso dst-i interface compatibility with ssm4": 1,
+    "vxdiag subaru software updates and compatibility": 1,
+    "subaru select monitor iv system coverage and functionality": 1
   },
   "knowledge": {
     "2016 subaru forester xt fa20dit can frames decoding": {
@@ -360,7 +1323,14 @@
       "conflicts": [],
       "related_topics": [
         "Subaru engine specifications",
-        "CAN bus protocol"
+        "CAN bus protocol",
+        "subaru factory service manual",
+        "subaru factory service manual contents",
+        "decoding can frames for the fa20dit engine",
+        "denso dst-010 interface compatibility",
+        "vxdiag multi diagnostic tool capabilities and limitations",
+        "new facts about 'troubleshooting common issues with obd2 scanners on subaru vehicles'",
+        "subaru ssm3/ssm4 software functionality"
       ],
       "last_researched": "2026-03-31T03:21:02.434788+00:00",
       "research_count": 1
@@ -374,7 +1344,10 @@
       "related_topics": [
         "Subaru FA20DIT engine diagnostics",
         "CAN bus decoding techniques",
-        "OBD2 parameter mapping for Subaru"
+        "OBD2 parameter mapping for Subaru",
+        "dms gesture on/off status",
+        "2016 subaru forester xt fa20dit can frames decoding",
+        "denso dst-010 interface"
       ],
       "last_researched": "2026-03-31T03:21:23.300357+00:00",
       "research_count": 1
@@ -409,7 +1382,20 @@
         "Subaru vehicle diagnostics",
         "tumble generator valve position sensor circuit issues",
         "obdlink mx+ provides oem-specific enhanced diagnostics support",
-        "bluetooth thinkcar obd ii scanner can check catalytic converters function"
+        "bluetooth thinkcar obd ii scanner can check catalytic converters function",
+        "subaru obd2 system",
+        "new facts about 'subaru obd2 system troubleshooting'",
+        "subaru factory service manual contents",
+        "dpf regeneration count",
+        "subaru obd2 trouble code p0120",
+        "subaru manufacturer-specific obd2 trouble codes",
+        "autel scanner maxicom mk808s",
+        "motopower mp69033",
+        "subaru ssm-iv diagnostic programming software",
+        "denso dst-010 interface compatibility",
+        "vxdiag multi diagnostic tool capabilities and limitations",
+        "new facts about 'troubleshooting common issues with obd2 scanners on subaru vehicles'",
+        "subaru ssm3/ssm4 software functionality"
       ],
       "last_researched": "2026-03-31T03:32:45.906793+00:00",
       "research_count": 1
@@ -452,7 +1438,16 @@
         "Subaru engine control systems",
         "OBD2 trouble code meanings for Subaru vehicles",
         "tumble generator valve position sensor circuit issues",
-        "subaru p0120 throttle position sensor replacement"
+        "subaru p0120 throttle position sensor replacement",
+        "subaru factory service manual contents",
+        "subaru emission-related component monitoring",
+        "specific ssm parameter data for 2015-2019 subaru models",
+        "obd2 trouble code definitions for subaru vehicles",
+        "subaru uses the standard obd2 protocol for engine and emissions",
+        "ford transit engines dpf natural removal",
+        "foxwell nt301",
+        "launch cr529 budget-friendly obd2 scanner",
+        "new facts about 'troubleshooting common issues with obd2 scanners on subaru vehicles'"
       ],
       "last_researched": "2026-03-31T03:32:56.972393+00:00",
       "research_count": 1
@@ -514,7 +1509,17 @@
         "Subaru throttle position sensor",
         "Subaru electronic throttle control",
         "subaru p0120 throttle position sensor replacement",
-        "subaru legacy engine management upgrades include engine tuning modules and software"
+        "subaru legacy engine management upgrades include engine tuning modules and software",
+        "subaru obd2 system",
+        "new facts about 'subaru obd2 system troubleshooting'",
+        "subaru factory service manual contents",
+        "obd2 trouble code definitions for subaru vehicles",
+        "dpf regeneration count and vehicle maintenance",
+        "ancel ad410",
+        "subaru ssm-iv diagnostic programming software",
+        "vxdiag multi diagnostic tool capabilities and limitations",
+        "new facts about 'troubleshooting common issues with obd2 scanners on subaru vehicles'",
+        "subaru ssm3/ssm4 software functionality"
       ],
       "last_researched": "2026-03-31T03:33:05.729597+00:00",
       "research_count": 1
@@ -732,6 +1737,1020 @@
       "related_topics": [],
       "last_researched": "2026-03-31T04:18:46.384855+00:00",
       "research_count": 1
+    },
+    "subaru factory service manual information for obd2 and ssm systems": {
+      "summary": "Subaru OBD2 system monitors emission-related components and systems for deterioration and malfunction, storing diagnostic trouble codes and freeze frame data in the on-board computer's memory",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "The Subaru OBD2 system complies with Section 1968.1 of the California Code of Regulations (OBD2 regulation) and all applicable Federal Clean Air Act regulations",
+          "confidence": "high",
+          "source_url": "https://igspgm.com/ssm/Subaru-On-Board-Diagnostic-Systems-OBD-I.pdf",
+          "added_at": "2026-04-01T05:23:07.844613+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "The OBD2 system stores freeze frame engine condition data, including engine load, engine coolant temperature, fuel trim, engine speed, and vehicle speed",
+          "confidence": "high",
+          "source_url": "https://igspgm.com/ssm/Subaru-On-Board-Diagnostic-Systems-OBD-I.pdf",
+          "added_at": "2026-04-01T05:23:07.844613+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "The Subaru Factory Service Manual is available for download for $36.00",
+          "confidence": "medium",
+          "source_url": "https://www.subaruoutback.org/threads/diy-manuals-and-tools.248993/",
+          "added_at": "2026-04-01T05:23:07.844613+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 systems",
+        "Subaru vehicle maintenance"
+      ],
+      "last_researched": "2026-04-01T05:23:12.612709+00:00",
+      "research_count": 1
+    },
+    "subaru obd2 system troubleshooting": {
+      "summary": "",
+      "summary_model_rank": 999,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "A 2008 Outback XT had an issue with the OBD2 port not working and fuses being fine",
+          "confidence": "medium",
+          "source_url": "https://www.subaruoutback.org/threads/obd2-port-not-working-and-fuses-are-fine.45741/",
+          "added_at": "2026-04-01T05:24:03.632060+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "A 2004 Forester 2.5x had an issue with the OBD2 scanner not working despite getting power",
+          "confidence": "medium",
+          "source_url": "https://www.subaruforester.org/threads/obd2-scanner-not-working.578490/",
+          "added_at": "2026-04-01T05:24:03.632060+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [],
+      "last_researched": "2026-04-01T05:24:06.326562+00:00",
+      "research_count": 1
+    },
+    "subaru factory service manual contents": {
+      "summary": "Subaru factory service manuals are available through various sources, including online subscriptions and downloads, but specific details on contents for 2015-2019 models are not provided in the given sources.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "Subaru provides factory service manuals through their official website techinfo.subaru.com",
+          "confidence": "medium",
+          "source_url": "https://techinfo.subaru.com/",
+          "added_at": "2026-04-01T05:24:39.898428+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Autozone carries common Subaru factory service manuals",
+          "confidence": "medium",
+          "source_url": "https://www.facebook.com/groups/subarumechanics/posts/3823770224578901/",
+          "added_at": "2026-04-01T05:24:39.898428+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "subaru obd2 trouble code p0120",
+        "subaru manufacturer-specific obd2 trouble codes",
+        "obd2 trouble code definitions for subaru vehicles",
+        "2016 subaru forester xt fa20dit can frames decoding"
+      ],
+      "last_researched": "2026-04-01T05:24:42.515422+00:00",
+      "research_count": 1
+    },
+    "subaru emission-related component monitoring": {
+      "summary": "",
+      "summary_model_rank": 999,
+      "weak_research_count": 0,
+      "facts": [],
+      "conflicts": [],
+      "related_topics": [
+        "subaru obd2 trouble code definitions",
+        "fa20dit engine can frames decoding",
+        "subaru manufacturer-specific obd2 trouble codes"
+      ],
+      "last_researched": "2026-04-01T05:25:08.944811+00:00",
+      "research_count": 1
+    },
+    "specific ssm parameter data for 2015-2019 subaru models": {
+      "summary": "Specific SSM parameter data for 2015-2019 Subaru models, including DPF Regeneration Count and DMS Gesture ON/OFF Status",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "DPF Regeneration Count can be requested by accessing addresses 0x00029D and 0x00029E",
+          "confidence": "high",
+          "source_url": "https://forum.autosportlabs.com/viewtopic.php?t=5936",
+          "added_at": "2026-04-01T05:25:55.851728+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "DMS Gesture ON/OFF Status can cause a communication error in SSM diagnosis, which can be resolved by deleting it from the Signal Selection list",
+          "confidence": "high",
+          "source_url": "https://subaru.oemdtc.com/3059/driver-monitoring-system-dms-diagnostic-information-2019-2021-subaru",
+          "added_at": "2026-04-01T05:25:55.851728+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "Subaru Select Monitor (SSM) diagnostics",
+        "OBD2 parameter data for vehicles",
+        "subaru manufacturer-specific obd2 trouble codes"
+      ],
+      "last_researched": "2026-04-01T05:25:58.892482+00:00",
+      "research_count": 1
+    },
+    "investigating ssm parameter data for other subaru models and years": {
+      "summary": "No specific OBD2 and SSM parameter data found for 2015-2019 Subaru models in the provided sources.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [],
+      "conflicts": [],
+      "related_topics": [],
+      "last_researched": "2026-04-01T05:27:11.262761+00:00",
+      "research_count": 1
+    },
+    "researching the use of obd2 scanners for subaru diagnostics": {
+      "summary": "Several OBD2 scanners are suitable for Subaru diagnostics, including VXDIAG VCX SE Pro, Mucar 892BT, and Autel Scanner MaxiCOM MK808S, which support Subaru Select Monitor (SSM) communication protocols and offer advanced diagnostic functions.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "VXDIAG VCX SE Pro supports Subaru SSM3 and SSM4 software for dealer-level diagnostics",
+          "confidence": "high",
+          "source_url": "https://iamcarhacker.com/best-obd2-scanners-for-subaru/",
+          "added_at": "2026-04-01T05:27:58.365319+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Mucar 892BT performs deep bi-directional tests and supports ECU coding",
+          "confidence": "high",
+          "source_url": "https://iamcarhacker.com/best-obd2-scanners-for-subaru/",
+          "added_at": "2026-04-01T05:27:58.365319+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Autel Scanner MaxiCOM MK808S offers comprehensive diagnostics for all available systems, including engine, transmission, ABS, and SRS",
+          "confidence": "high",
+          "source_url": "https://themarketfront.com/best-obd2-scanners-for-subaru/",
+          "added_at": "2026-04-01T05:27:58.365319+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Subaru uses the standard OBD2 protocol for engine and emissions, but requires SSM-compatible tools for full-system access",
+          "confidence": "high",
+          "source_url": "https://iamcarhacker.com/best-obd2-scanners-for-subaru/",
+          "added_at": "2026-04-01T05:27:58.365319+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Mucar 682 gives full-system access on most Subarus and supports bi-directional tests",
+          "confidence": "medium",
+          "source_url": "https://iamcarhacker.com/best-obd2-scanners-for-subaru/",
+          "added_at": "2026-04-01T05:27:58.365319+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 scanners",
+        "Subaru diagnostics"
+      ],
+      "last_researched": "2026-04-01T05:28:01.520392+00:00",
+      "research_count": 1
+    },
+    "exploring the relationship between dpf regeneration count and vehicle maintenance": {
+      "summary": "DPF regeneration is crucial for diesel engine maintenance, particularly in UK city driving conditions",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "For Ford Transit engines, taking the vehicle for a 20-minute ride along a motorway with consistent speed (above 50mph) can help remove DPF naturally",
+          "confidence": "medium",
+          "source_url": "https://britishauthor.uk/the-essential-uk-guide-to-ford-transit-engines-maintenance-specs-replacement/",
+          "added_at": "2026-04-01T05:28:35.981074+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "Diesel engine maintenance",
+        "DPF regeneration"
+      ],
+      "last_researched": "2026-04-01T05:28:38.534691+00:00",
+      "research_count": 1
+    },
+    "subaru select monitor (ssm) protocol details": {
+      "summary": "Subaru Select Monitor (SSM) protocol details, including SSM-III software and Denso DST-010 interface",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "Subaru SSM-III Software Version: V2020.7",
+          "confidence": "high",
+          "source_url": "https://www.ecuprogramer.com/sale-457206-v2020-7-subaru-ssm-iii-software-license-for-vxdiag-multi-diagnostic-tool.htm",
+          "added_at": "2026-04-01T05:28:56.294995+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Denso DST-010 interface supports ISO9141 (K/L), HS-CAN, CAN-FD, and DoIP (Ethernet) protocols",
+          "confidence": "high",
+          "source_url": "https://diagnoex.com/products/denso-dst-010-interface-subaru-dealer-scan-tool",
+          "added_at": "2026-04-01T05:28:56.294995+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Subaru SSM-III software supports both 12V and 24V gasoline and diesel cars",
+          "confidence": "high",
+          "source_url": "https://www.ecuprogramer.com/sale-457206-v2020-7-subaru-ssm-iii-software-license-for-vxdiag-multi-diagnostic-tool.htm",
+          "added_at": "2026-04-01T05:28:56.294995+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Denso DST-010 interface is compatible with Windows 10/11, CPU 1GHz+, 2GB RAM, 1GB disk (excl. ARM)",
+          "confidence": "high",
+          "source_url": "https://diagnoex.com/products/denso-dst-010-interface-subaru-dealer-scan-tool",
+          "added_at": "2026-04-01T05:28:56.294995+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 protocols",
+        "Subaru vehicle diagnostics"
+      ],
+      "last_researched": "2026-04-01T05:28:58.910112+00:00",
+      "research_count": 1
+    },
+    "comparison of obd2 scanners for subaru models": {
+      "summary": "Several OBD2 scanners are compatible with Subaru models, including ANCEL AD310, ANCEL AD410, BlueDriver Bluetooth Pro, and FOXWELL NT301",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "ANCEL AD310 is a universal OBD II scanner compatible with Subaru models",
+          "confidence": "high",
+          "source_url": "https://carrepairmag.com/obd2-scanner-for-subaru/",
+          "added_at": "2026-04-01T05:29:16.639910+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "ANCEL AD410 is an enhanced OBD2 scanner that reads and clears trouble codes for Subaru models",
+          "confidence": "high",
+          "source_url": "https://carrepairmag.com/obd2-scanner-for-subaru/",
+          "added_at": "2026-04-01T05:29:16.639910+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "BlueDriver Bluetooth Pro is a wireless OBDII scan tool compatible with Subaru models",
+          "confidence": "high",
+          "source_url": "https://carrepairmag.com/obd2-scanner-for-subaru/",
+          "added_at": "2026-04-01T05:29:16.639910+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "FOXWELL NT301 is a professional mechanic OBDII diagnostic code reader tool compatible with Subaru models",
+          "confidence": "high",
+          "source_url": "https://carsbibles.com/obd2-scanner-subaru/",
+          "added_at": "2026-04-01T05:29:16.639910+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "MOTOPOWER MP69033 is a car OBD2 scanner code reader compatible with Subaru models",
+          "confidence": "high",
+          "source_url": "https://carrepairmag.com/obd2-scanner-for-subaru/",
+          "added_at": "2026-04-01T05:29:16.639910+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 scanner reviews",
+        "Subaru vehicle maintenance",
+        "Car diagnostic tools"
+      ],
+      "last_researched": "2026-04-01T05:29:19.794014+00:00",
+      "research_count": 1
+    },
+    "advanced diagnostic functions for subaru vehicles": {
+      "summary": "The VXDIAG VCX SE for SUBARU is a professional diagnostic tool that supports SSM3/SSM4, ECU programming, coding, and key programming functions for Subaru vehicles from 2005 to 2026.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "VXDIAG VCX SE for SUBARU supports SSM3/SSM4 software",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:29:49.713805+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE for SUBARU supports ECU programming, coding, and key programming functions",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:29:49.713805+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE for SUBARU supports 35+ service functions, including oil reset, ABS bleeding, and DPF regeneration",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:29:49.713805+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE for SUBARU is compatible with Windows 7 Pro and Windows 10 Pro (64-bit)",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:29:49.713805+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE for SUBARU supports lifetime free firmware and license updates",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:29:49.713805+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 diagnostic tools for Subaru vehicles",
+        "Subaru vehicle maintenance and repair"
+      ],
+      "last_researched": "2026-04-01T05:29:52.925441+00:00",
+      "research_count": 1
+    },
+    "subaru ssm-iv diagnostic programming software": {
+      "summary": "The Subaru Select Monitor IV (SSM-IV) is a diagnostic programming software that provides 100% dealer-level systems coverage and functionality for Subaru vehicles from 2004 to 2024.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "The SSM-IV kit includes a computer laptop, proprietary 16-pin diagnostic cable, Denso DST-i interface, SD Card, and properly licensed Subaru SSM-IV diagnostic software application.",
+          "confidence": "high",
+          "source_url": "https://ohiodiagnostics.com/subaru/",
+          "added_at": "2026-04-01T05:30:14.709933+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "The SSM-IV has identical systems coverage and functionality as used at Subaru's dealer network, including smart key codes, key registration, keyless entry, blind spot detection, combination meter, telematics, and adaptive cruise control.",
+          "confidence": "high",
+          "source_url": "https://ohiodiagnostics.com/subaru/",
+          "added_at": "2026-04-01T05:30:14.709933+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "The Denso DST-010 is a new diagnostic interface for Subaru SSM4 and SSM5 diagnostic programming software, first used in 2022.",
+          "confidence": "high",
+          "source_url": "https://diagnoex.com/products/subaru-ssm-denso-dst-010-diagnostic-pro-package",
+          "added_at": "2026-04-01T05:30:14.709933+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "The Subaru Select Monitor SSM kit includes a Panasonic Toughbook FZ-55, Denso DST-010 interface, SSM License SSM3, SSM4, and SSM5.",
+          "confidence": "high",
+          "source_url": "https://diagnoex.com/products/subaru-ssm-denso-dst-010-diagnostic-pro-package",
+          "added_at": "2026-04-01T05:30:14.709933+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "The SSM-IV is only compatible with Windows 10.",
+          "confidence": "high",
+          "source_url": "https://ohiodiagnostics.com/subaru/",
+          "added_at": "2026-04-01T05:30:14.709933+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 diagnostic protocols",
+        "Subaru vehicle systems and components",
+        "Dealer-level diagnostic tools and software",
+        "subaru obd2 trouble code p0120",
+        "obd2 trouble code definitions for subaru vehicles"
+      ],
+      "last_researched": "2026-04-01T05:30:17.989148+00:00",
+      "research_count": 1
+    },
+    "denso dst-010 interface compatibility with other vehicle models": {
+      "summary": "The Denso DST-010 interface is compatible with Subaru SSM, Toyota GTS+, and Honda iHDS programmer, and supports DoIP high-speed communication and SAE J2534 passthru.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "Denso DST-010 VCI is compatible with Subaru SSM, Toyota GTS+, and Honda iHDS programmer",
+          "confidence": "high",
+          "source_url": "https://www.obd2sales.com/product/denso-dst010-vci/",
+          "added_at": "2026-04-01T05:30:34.650073+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Denso DST-010 supports DoIP high-speed communication (ISO13400)",
+          "confidence": "high",
+          "source_url": "https://www.alicar.com/Newest-DENSO-DST-010-A-Car-Diagnostic-Tool-for-Toyota-Honda-Subaru-Mazda-DoIP-J2534-Supported-p28818796.html",
+          "added_at": "2026-04-01T05:30:34.650073+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Denso DST-010 supports SAE J2534 passthru",
+          "confidence": "high",
+          "source_url": "https://www.alicar.com/Newest-DENSO-DST-010-A-Car-Diagnostic-Tool-for-Toyota-Honda-Subaru-Mazda-DoIP-J2534-Supported-p28818796.html",
+          "added_at": "2026-04-01T05:30:34.650073+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Denso DST-010 does not support cars before 2008",
+          "confidence": "high",
+          "source_url": "https://www.obd2sales.com/product/denso-dst010-vci/",
+          "added_at": "2026-04-01T05:30:34.650073+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 protocols",
+        "Vehicle diagnostic tools"
+      ],
+      "last_researched": "2026-04-01T05:30:38.003108+00:00",
+      "research_count": 1
+    },
+    "vxdiag multi diagnostic tool capabilities and limitations": {
+      "summary": "VXDIAG Multi Diagnostic Tool supports various car brands including Subaru, with capabilities for fault diagnosis, programming, and coding",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "VXDIAG Multi Diagnostic Tool supports Subaru",
+          "confidence": "high",
+          "source_url": "https://www.obdtools.net/goods-932-vxdiag-multi-diagnostic-tool-for-full-brands.html",
+          "added_at": "2026-04-01T05:30:54.838983+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG Multi Diagnostic Tool has a 1TB HDD and Lenovo T420",
+          "confidence": "high",
+          "source_url": "https://www.obdtools.net/goods-932-vxdiag-multi-diagnostic-tool-for-full-brands.html",
+          "added_at": "2026-04-01T05:30:54.838983+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX NANO RVDIAG supports Renault vehicles from 2005 onwards",
+          "confidence": "high",
+          "source_url": "https://www.obdtools.net/goods-1424-vxdiag-vcx-nano-rvdiag-for-renault.html",
+          "added_at": "2026-04-01T05:30:54.838983+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG covers over 90% of vehicle models and is compatible with multiple communication protocols",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/blogs/blog/everything-you-need-to-know-about-vxdiag-in-one-article",
+          "added_at": "2026-04-01T05:30:54.838983+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2",
+        "SSM parameter data",
+        "Subaru diagnostic tools",
+        "subaru obd2 trouble code p0120",
+        "obd2 trouble code definitions for subaru vehicles",
+        "2016 subaru forester xt fa20dit can frames decoding"
+      ],
+      "last_researched": "2026-04-01T05:30:57.558897+00:00",
+      "research_count": 1
+    },
+    "comparison of obd2 scanner compatibility with different subaru models": {
+      "summary": "Innova OBD2 scanners are compatible with Subaru models, including the 2012 Subaru Outback, and offer features such as real-time data, code libraries, and repair solutions apps",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "Innova 5610 is a recommended OBD2 scanner for 2012 Subaru Outback",
+          "confidence": "high",
+          "source_url": "https://www.innova.com/pages/obd2-subaru",
+          "added_at": "2026-04-01T05:31:26.138645+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Innova OBD2 scanners offer features such as real-time data, code libraries, and repair solutions apps",
+          "confidence": "high",
+          "source_url": "https://www.innova.com/pages/obd2-subaru",
+          "added_at": "2026-04-01T05:31:26.138645+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Bluedriver is a Bluetooth OBD2 scanner designed for Subarus but is reportedly slow",
+          "confidence": "medium",
+          "source_url": "https://www.facebook.com/groups/subaruforestergroup/posts/1250107690009133/",
+          "added_at": "2026-04-01T05:31:26.138645+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 scanner compatibility with Subaru models",
+        "Subaru diagnostic tools and software"
+      ],
+      "last_researched": "2026-04-01T05:31:30.622598+00:00",
+      "research_count": 1
+    },
+    "review of obd2 scanner features and pricing for subaru owners": {
+      "summary": "Several OBD2 scanners are available for Subaru owners, including the Innova 5610, Topdon TopScan, and Ancel BD200, with features such as bi-directional scanning, real-time engine data, and dedicated apps",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "Innova 5610 is a bi-directional OBD2 scanner with a range of professional features",
+          "confidence": "high",
+          "source_url": "https://www.tomsguide.com/best-picks/best-obd2-scanners",
+          "added_at": "2026-04-01T05:31:54.038259+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Topdon TopScan is a wireless OBD2 scanner with a compact design and professional-feeling features",
+          "confidence": "high",
+          "source_url": "https://www.tomsguide.com/best-picks/best-obd2-scanners",
+          "added_at": "2026-04-01T05:31:54.038259+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Ancel BD200 is an OBD2 scanner with Bluetooth connectivity, real-time engine data, and a dedicated app",
+          "confidence": "high",
+          "source_url": "https://vtsautoworld.com/ancel-bd200-obd2-scanner-bluetooth-review/",
+          "added_at": "2026-04-01T05:31:54.038259+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Launch CR529 is a budget-friendly OBD2 scanner with lifetime support and upgrades",
+          "confidence": "high",
+          "source_url": "https://www.tomsguide.com/best-picks/best-obd2-scanners",
+          "added_at": "2026-04-01T05:31:54.038259+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 scanners for Subaru",
+        "Subaru diagnostic tools"
+      ],
+      "last_researched": "2026-04-01T05:31:57.273366+00:00",
+      "research_count": 1
+    },
+    "troubleshooting common issues with obd2 scanners on subaru vehicles": {
+      "summary": "Subaru vehicles from 2015-2019 are compatible with various OBD2 scanners, including Ancel AD310, Autel MS309, and ANCEL AD410, which offer features such as reading and clearing diagnostic trouble codes, live data tracking, and O2 sensor testing.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "Ancel AD310 supports all OBDII protocols and is compatible with Subaru vehicles from 1996 onwards.",
+          "confidence": "high",
+          "source_url": "https://gmundcars.com/best-obd2-scanners-for-subaru-forester/",
+          "added_at": "2026-04-01T05:32:16.022110+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Autel MS309 provides on-screen definitions for over 3,000 diagnostic trouble codes and is compatible with 99% of OBDII-compliant vehicles, including Subarus.",
+          "confidence": "high",
+          "source_url": "https://gmundcars.com/best-obd2-scanners-for-subaru-forester/",
+          "added_at": "2026-04-01T05:32:16.022110+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "ANCEL AD410 features enhanced diagnostics, including O2 sensor testing, and has over 42,000 built-in DTC lookups for efficient Subaru troubleshooting.",
+          "confidence": "high",
+          "source_url": "https://gmundcars.com/best-obd2-scanners-for-subaru-forester/",
+          "added_at": "2026-04-01T05:32:16.022110+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Most Subaru models, including those from 2001 onwards, are compatible with OBD2 scanners.",
+          "confidence": "medium",
+          "source_url": "https://www.klavkarr.com/vehicle-list-compatible-obd2/subaru",
+          "added_at": "2026-04-01T05:32:16.022110+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "Common OBD2 fault codes on Subaru vehicles include P0420, P0171, P0030, P0031, and P0037.",
+          "confidence": "medium",
+          "source_url": "https://www.klavkarr.com/vehicle-list-compatible-obd2/subaru",
+          "added_at": "2026-04-01T05:32:16.022110+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 scanners",
+        "Subaru vehicle maintenance",
+        "Diagnostic trouble codes"
+      ],
+      "last_researched": "2026-04-01T05:32:19.635905+00:00",
+      "research_count": 1
+    },
+    "subaru ssm3/ssm4 software functionality": {
+      "summary": "VXDIAG Subaru SSM3 and SSM4 software functionality and compatibility information",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "SSM3 2020.7 and SSM4 V22.60 are compatible with Windows 7, 8, and 10",
+          "confidence": "high",
+          "source_url": "http://blog.obdii365.com/2020/12/10/free-download-subaru-ssm4-v2020-7-software-and-patch/",
+          "added_at": "2026-04-01T05:32:59.912424+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "SSM4 V22.60 supports Subaru vehicles from 2016 onwards",
+          "confidence": "high",
+          "source_url": "http://blog.obdii365.com/2020/12/10/free-download-subaru-ssm4-v2020-7-software-and-patch/",
+          "added_at": "2026-04-01T05:32:59.912424+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "SSM3 works with Subaru vehicles from 1998 to 2018",
+          "confidence": "high",
+          "source_url": "http://blog.obdii365.com/2020/12/10/free-download-subaru-ssm4-v2020-7-software-and-patch/",
+          "added_at": "2026-04-01T05:32:59.912424+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG Subaru SSM3 and SSM4 support all system diagnosis, each system check, saved data display, immobilizer registration, reprogramming, and other functions",
+          "confidence": "high",
+          "source_url": "https://www.obd2sales.com/product/vxdiag-subaru-diagnostic-tool/",
+          "added_at": "2026-04-01T05:32:59.912424+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "SSM4 V28.6.0 is compatible with Windows 7, 8, and 10",
+          "confidence": "high",
+          "source_url": "http://blog.obdii365.com/2022/02/09/download-install-and-activate-v2022-01-vxdiag-subaru-ssm3-ssm4/",
+          "added_at": "2026-04-01T05:32:59.912424+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 diagnostics",
+        "Subaru vehicle maintenance and repair",
+        "subaru obd2 trouble code p0120",
+        "obd2 trouble code definitions for subaru vehicles",
+        "2016 subaru forester xt fa20dit can frames decoding"
+      ],
+      "last_researched": "2026-04-01T05:33:03.846593+00:00",
+      "research_count": 1
+    },
+    "vxdiag vcx se for subaru compatibility with other vehicle brands": {
+      "summary": "VXDIAG VCX SE is a professional diagnostic tool for Subaru vehicles, supporting various functions including ECU programming, coding, and key programming. It is compatible with Windows 7 Pro and Windows 10 Pro (64-bit) and has lifetime free updates.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "VXDIAG VCX SE supports SSM3 and SSM4 software for Subaru vehicles",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:33:25.416578+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE can be used as a J2534 passthru device for OEM online programming",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:33:25.416578+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE supports DoIP protocol for high-speed data transmission and remote diagnostics",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:33:25.416578+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE is compatible with Windows 7 Pro and Windows 10 Pro (64-bit)",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:33:25.416578+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE has lifetime free updates for firmware and license",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-subaru",
+          "added_at": "2026-04-01T05:33:25.416578+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "OBD2 diagnostic tools",
+        "Subaru vehicle diagnostics",
+        "J2534 passthru devices"
+      ],
+      "last_researched": "2026-04-01T05:33:29.116485+00:00",
+      "research_count": 1
+    },
+    "advanced diagnostic functions for subaru vehicles using vxdiag vcx se": {
+      "summary": "VXDIAG VCX SE supports Subaru vehicles from 2005-2022 with software versions V1.57.71.8, V22.60, and 2022.01, and can be used for diagnostic, programming, and coding functions.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "VXDIAG VCX SE supports Subaru vehicles from 2005-2022",
+          "confidence": "high",
+          "source_url": "https://www.vxdiagshop.com/wholesale/vxdiag-vcx-se-for-benz-doip-with-hdd.html",
+          "added_at": "2026-04-01T05:33:45.430248+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE supports software versions V1.57.71.8, V22.60, and 2022.01 for Subaru vehicles",
+          "confidence": "high",
+          "source_url": "https://www.vxdiagshop.com/wholesale/vxdiag-vcx-se-for-benz-doip-with-hdd.html",
+          "added_at": "2026-04-01T05:33:45.430248+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG VCX SE can be used for diagnostic, programming, and coding functions for Subaru vehicles",
+          "confidence": "high",
+          "source_url": "https://vxdiag.com/products/vxdiag-vcx-se-for-mercedes-benz",
+          "added_at": "2026-04-01T05:33:45.430248+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "VXDIAG VCX SE",
+        "Subaru vehicle diagnostics"
+      ],
+      "last_researched": "2026-04-01T05:33:48.575694+00:00",
+      "research_count": 1
+    },
+    "subaru ssm-iv compatibility with newer vehicle models": {
+      "summary": "Subaru Select Monitor (SSM) is a diagnostic tool for Subaru vehicles, with SSM3 compatible with model years 1998-2016 and SSM4 compatible with model years 2016+.",
+      "summary_model_rank": 1,
+      "weak_research_count": 0,
+      "facts": [
+        {
+          "content": "SSM3 is compatible with model years 1998-2016",
+          "confidence": "high",
+          "source_url": "http://blog.vxdiagshop.com/2020/01/22/vxdiag-subaru-software-compatible-ssm3-or-ssm4/",
+          "added_at": "2026-04-01T05:34:10.518304+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "SSM4 is compatible with model years 2016+",
+          "confidence": "high",
+          "source_url": "http://blog.vxdiagshop.com/2020/01/22/vxdiag-subaru-software-compatible-ssm3-or-ssm4/",
+          "added_at": "2026-04-01T05:34:10.518304+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "SSM4 requires a Denso DST-i interface or a J2534 compatible device",
+          "confidence": "high",
+          "source_url": "https://ohiodiagnostics.weebly.com/ohiodiagnostics-llc.html",
+          "added_at": "2026-04-01T05:34:10.518304+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "VXDIAG Subaru software is compatible with SSM3 and SSM4",
+          "confidence": "high",
+          "source_url": "http://blog.vxdiagshop.com/2020/01/22/vxdiag-subaru-software-compatible-ssm3-or-ssm4/",
+          "added_at": "2026-04-01T05:34:10.518304+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        },
+        {
+          "content": "SSM4 can be used with any J2534 capable device by replacing the DST-i DLL file",
+          "confidence": "high",
+          "source_url": "http://blog.obdii365.com/2023/07/04/how-to-set-up-subaru-ssm4-with-j2534-device/",
+          "added_at": "2026-04-01T05:34:10.518304+00:00",
+          "model_rank": 1,
+          "source_quality": "medium",
+          "source_count": 1
+        }
+      ],
+      "conflicts": [],
+      "related_topics": [
+        "Subaru diagnostic tools",
+        "OBD2 compatibility",
+        "J2534 devices",
+        "Denso DST-i interface",
+        "VXDIAG Subaru software"
+      ],
+      "last_researched": "2026-04-01T05:34:16.838211+00:00",
+      "research_count": 1
     }
-  }
+  },
+  "objectives": [],
+  "snapshots": [
+    {
+      "label": "session_start",
+      "taken_at": "2026-04-01T05:22:08.759336+00:00",
+      "data": {
+        "2016 subaru forester xt fa20dit can frames decoding": {
+          "fact_count": 3,
+          "confidence_avg": 0.3333333333333333,
+          "summary_hash": "0ff28393"
+        },
+        "decoding can frames for the fa20dit engine": {
+          "fact_count": 0,
+          "confidence_avg": 2.0,
+          "summary_hash": "d41d8cd9"
+        },
+        "obd2 trouble code definitions for subaru vehicles": {
+          "fact_count": 2,
+          "confidence_avg": 1.0,
+          "summary_hash": "a83c4bb0"
+        },
+        "subaru manufacturer-specific obd2 trouble codes": {
+          "fact_count": 3,
+          "confidence_avg": 0.3333333333333333,
+          "summary_hash": "67ed3d99"
+        },
+        "subaru obd2 trouble code p0120": {
+          "fact_count": 5,
+          "confidence_avg": 0.0,
+          "summary_hash": "742d2596"
+        },
+        "tumble generator valve position sensor circuit issues in subaru vehicles": {
+          "fact_count": 3,
+          "confidence_avg": 0.3333333333333333,
+          "summary_hash": "ac88bebf"
+        },
+        "engine control system malfunctions in 2015-2019 subaru models": {
+          "fact_count": 3,
+          "confidence_avg": 0.6666666666666666,
+          "summary_hash": "cd3ace6c"
+        },
+        "subaru p0120 throttle position sensor replacement": {
+          "fact_count": 3,
+          "confidence_avg": 1.0,
+          "summary_hash": "47d46f05"
+        },
+        "2015-2019 subaru obd2 parameters": {
+          "fact_count": 3,
+          "confidence_avg": 1.0,
+          "summary_hash": "d41d8cd9"
+        },
+        "comparison of obd2 and ssm parameter data for subaru vehicles": {
+          "fact_count": 4,
+          "confidence_avg": 0.25,
+          "summary_hash": "1b674816"
+        }
+      }
+    }
+  ],
+  "hypotheses": []
 }
