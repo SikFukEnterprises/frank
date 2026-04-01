@@ -5,6 +5,8 @@ import time
 from urllib.parse import quote_plus
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from ddgs import DDGS
 
@@ -41,6 +43,17 @@ _FETCH_SEM = threading.Semaphore(3)
 _LAST_FETCH_LOCK = threading.Lock()
 _last_fetch_time: float = 0.0
 
+# Shared session with automatic retries on connection / server errors
+_SESSION = requests.Session()
+_retry = Retry(
+    total=3,
+    backoff_factor=1,
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["GET"],
+)
+_SESSION.mount("https://", HTTPAdapter(max_retries=_retry))
+_SESSION.mount("http://", HTTPAdapter(max_retries=_retry))
+
 # Query variant suffixes, indexed deterministically via hash
 _QUERY_VARIANTS = [
     "{topic} tutorial",
@@ -57,7 +70,7 @@ _QUERY_VARIANTS = [
 
 
 def _rate_limited_get(url: str, headers: dict | None = None, timeout: int | None = None) -> requests.Response:
-    """GET with a global minimum gap between fetches."""
+    """GET with a global minimum gap between fetches and automatic retries."""
     global _last_fetch_time
     with _LAST_FETCH_LOCK:
         now = time.monotonic()
@@ -67,7 +80,7 @@ def _rate_limited_get(url: str, headers: dict | None = None, timeout: int | None
         _last_fetch_time = time.monotonic()
     h = headers if headers is not None else _HEADERS
     t = timeout if timeout is not None else _FETCH_TIMEOUT
-    return requests.get(url, timeout=t, headers=h)
+    return _SESSION.get(url, timeout=t, headers=h)
 
 
 _BOILERPLATE_RE = re.compile(
@@ -145,7 +158,7 @@ def _try_wayback(url: str) -> str:
     """
     try:
         api_url = f"https://archive.org/wayback/available?url={quote_plus(url)}"
-        resp = requests.get(api_url, timeout=8, headers=_HEADERS)
+        resp = _SESSION.get(api_url, timeout=8, headers=_HEADERS)
         if resp.status_code == 200:
             data = resp.json()
             snapshot = data.get("archived_snapshots", {}).get("closest", {})
@@ -325,7 +338,7 @@ class WebSearcher:
                 f"https://api.github.com/search/repositories"
                 f"?q={quote_plus(topic)}&sort=stars&per_page=3"
             )
-            resp = requests.get(search_url, timeout=_FETCH_TIMEOUT, headers=_GITHUB_HEADERS)
+            resp = _SESSION.get(search_url, timeout=_FETCH_TIMEOUT, headers=_GITHUB_HEADERS)
             if resp.status_code == 403:
                 print("[WARN] GitHub API rate limit hit")
                 return []
@@ -363,7 +376,7 @@ class WebSearcher:
         for branch in ("main", "master"):
             url = f"https://raw.githubusercontent.com/{owner}/{name}/{branch}/README.md"
             try:
-                resp = requests.get(url, timeout=_FETCH_TIMEOUT, headers=_GITHUB_HEADERS)
+                resp = _SESSION.get(url, timeout=_FETCH_TIMEOUT, headers=_GITHUB_HEADERS)
                 if resp.status_code == 200:
                     return resp.text
             except Exception:
@@ -377,7 +390,7 @@ class WebSearcher:
             f"/issues?state=open&per_page=5"
         )
         try:
-            resp = requests.get(url, timeout=_FETCH_TIMEOUT, headers=_GITHUB_HEADERS)
+            resp = _SESSION.get(url, timeout=_FETCH_TIMEOUT, headers=_GITHUB_HEADERS)
             if resp.status_code == 403:
                 print(f"[WARN] GitHub API rate limit on issues for {owner}/{name}")
                 return ""
