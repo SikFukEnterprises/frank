@@ -152,16 +152,35 @@ def _command_loop(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
     """
     ui.console.print(_help_str() + "\n")
 
+    cmd_input = ui.create_command_prompt(display)
+    cmd_input.start()
+
+    try:
+        return _command_loop_inner(loop, kb, groq, session, display,
+                                  research_thread, extra_loops, cmd_input)
+    finally:
+        cmd_input.stop()
+
+
+def _command_loop_inner(loop: ResearchLoop, kb: KnowledgeBase, groq: GroqClient,
+                        session: dict, display: ui.LiveDisplay,
+                        research_thread: threading.Thread,
+                        extra_loops: list | None,
+                        cmd_input) -> str:
+    """Inner command loop — separated so the outer function manages prompt lifecycle."""
     while True:
         try:
-            line = input()
+            raw = cmd_input.prompt()
+        except KeyboardInterrupt:
+            continue  # Ctrl-C clears the input line
         except EOFError:
             loop.signal_stop()
+            for el in (extra_loops or []):
+                el.signal_stop()
             research_thread.join()
             display.stop()
             return "quit"
 
-        raw = line.strip()
         cmd = raw.lower()
 
         # ── Navigation ────────────────────────────────────────────────────

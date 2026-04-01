@@ -4,6 +4,7 @@ requests
 beautifulsoup4
 lxml
 rich
+prompt-toolkit
 # New source types
 pypdf
 feedparser
