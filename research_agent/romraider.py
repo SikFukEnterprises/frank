@@ -25,23 +25,55 @@ from urllib.parse import urljoin
 sys.path.insert(0, os.path.dirname(__file__))
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 _ROMRAIDER_URLS = [
-    "https://raw.githubusercontent.com/RomRaider/RomRaider/master/src/main/resources/logger/ecu/definition/logger_EJ_FA_Subaru.xml",
-    "https://raw.githubusercontent.com/RomRaider/RomRaider/master/src/main/resources/logger/ecu/definition/logger_WRX_STi_EJ257_15-21.xml",
-    "https://raw.githubusercontent.com/RomRaider/RomRaider/master/src/main/resources/logger/ecu/definition/logger_Subaru_TCM.xml",
+    "https://raw.githubusercontent.com/RomRaider/RomRaider/master/definitions/log_defs.xml",
 ]
 
-_HEADERS = {"User-Agent": "frank-research-agent/1.0"}
-_FETCH_TIMEOUT = 15
+# Fallback: GitHub API content endpoint (returns base64, but works when raw CDN is blocked)
+_ROMRAIDER_API_URLS = [
+    "https://api.github.com/repos/RomRaider/RomRaider/contents/definitions/log_defs.xml?ref=master",
+]
+
+_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+_API_HEADERS = {
+    "User-Agent": "frank-research-agent/1.0",
+    "Accept": "application/vnd.github.v3+json",
+}
+_FETCH_TIMEOUT = 30
+_MAX_RETRIES = 3
+
+
+def _build_session() -> requests.Session:
+    """Build a requests session with automatic retries on connection errors."""
+    session = requests.Session()
+    retry = Retry(
+        total=_MAX_RETRIES,
+        backoff_factor=1,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
 
 
 # ── XML fetch + parse ──────────────────────────────────────────────────────────
 
 def fetch_logger_xml(url: str) -> str | None:
     """Fetch RomRaider logger XML from a URL. Returns text or None."""
+    session = _build_session()
     try:
-        resp = requests.get(url, timeout=_FETCH_TIMEOUT, headers=_HEADERS)
+        resp = session.get(url, timeout=_FETCH_TIMEOUT, headers=_HEADERS)
         resp.raise_for_status()
         return resp.text
     except Exception as e:
@@ -49,10 +81,49 @@ def fetch_logger_xml(url: str) -> str | None:
         return None
 
 
+def _fetch_via_api(api_url: str) -> str | None:
+    """Fallback: fetch file content via the GitHub API (base64-encoded)."""
+    import base64
+    session = _build_session()
+    try:
+        resp = session.get(api_url, timeout=_FETCH_TIMEOUT, headers=_API_HEADERS)
+        resp.raise_for_status()
+        data = resp.json()
+        content = data.get("content", "")
+        return base64.b64decode(content).decode("utf-8")
+    except Exception as e:
+        print(f"[WARN] GitHub API fallback failed {api_url}: {e}")
+        return None
+
+
+def _normalise_offset(raw: str) -> str:
+    """Normalise a RomRaider offset like '#000E' to '0x000E'."""
+    raw = raw.strip()
+    if raw.startswith("#"):
+        return "0x" + raw[1:]
+    if raw.startswith("0x") or raw.startswith("0X"):
+        return raw
+    return raw
+
+
+def _storage_len(storagetype: str) -> int:
+    """Return byte length for a RomRaider storagetype."""
+    st = storagetype.lower()
+    if st in ("uint16", "int16"):
+        return 2
+    if st in ("float", "uint32", "int32"):
+        return 4
+    return 1  # uint8 or default
+
+
 def parse_logger_xml(xml_text: str, source_url: str = "") -> list[dict]:
     """
-    Parse a RomRaider logger XML definition file.
+    Parse a RomRaider logger XML definition file (definitions/log_defs.xml).
     Returns list of parameter dicts with standardized fields.
+
+    The actual XML structure uses <logprotocol type="SSM"> wrappers and
+    parameter attributes (offset, storagetype, expr, metric) rather than
+    child elements.
     """
     params = []
     try:
@@ -61,28 +132,38 @@ def parse_logger_xml(xml_text: str, source_url: str = "") -> list[dict]:
         print(f"[WARN] XML parse error: {e}")
         return []
 
-    # RomRaider XML structure varies slightly — handle both flat and nested protocol tags
-    protocols = root.findall(".//protocol") or [root]
+    # Find protocol containers: <logprotocol type="SSM"> or <protocol id="...">
+    protocols = root.findall(".//logprotocol")
+    if not protocols:
+        protocols = root.findall(".//protocol")
+    if not protocols:
+        protocols = [root]
 
     for proto_el in protocols:
-        proto_id = proto_el.get("id", "SSM")
+        proto_id = proto_el.get("type", proto_el.get("id", "SSM"))
 
-        # Parameters may be under <parameters><parameter> or <parameter> directly
         for param in proto_el.findall(".//parameter"):
-            param_id   = param.get("id", "")
-            name       = param.get("name", "")
-            desc       = param.get("desc", param.get("description", ""))
-            target     = param.get("target", "1")  # 1=ECU, 2=TCU etc.
+            param_id = param.get("id", "")
+            name     = param.get("name", param_id)  # id doubles as name
+            desc     = param.get("desc", param.get("description", ""))
 
-            # Address element
-            addr_el    = param.find("address")
-            address    = ""
-            addr_len   = 1
-            if addr_el is not None:
+            # Address: prefer 'offset' attribute (actual format), fall back to <address> child
+            offset_attr = param.get("offset", "")
+            addr_el     = param.find("address")
+
+            address  = ""
+            addr_len = 1
+            storagetype = param.get("storagetype", "uint8")
+
+            if offset_attr:
+                address  = _normalise_offset(offset_attr)
+                addr_len = _storage_len(storagetype)
+            elif addr_el is not None:
                 raw_addr = (addr_el.text or "").strip()
-                # Normalise: could be decimal or hex
                 if raw_addr.startswith("0x") or raw_addr.startswith("0X"):
                     address = raw_addr.upper()
+                elif raw_addr.startswith("#"):
+                    address = _normalise_offset(raw_addr)
                 elif raw_addr.isdigit():
                     address = hex(int(raw_addr)).upper()
                 else:
@@ -92,18 +173,25 @@ def parse_logger_xml(xml_text: str, source_url: str = "") -> list[dict]:
                 except ValueError:
                     addr_len = 1
 
-            # Conversions — take the first one as default
-            units  = ""
-            expr   = "x"
-            fmt    = "0.00"
-            for conv in param.findall(".//conversion"):
-                units = conv.get("units", "")
-                expr  = conv.get("expr",  conv.get("expression", "x"))
-                fmt   = conv.get("format", "0.00")
-                break  # use first conversion
+            # Units / expression / format: prefer attributes, fall back to <conversion> child
+            units = param.get("metric", "")
+            expr  = param.get("expr", "")
+            fmt   = "0." + "0" * int(param.get("decimals", "2") or "2") if param.get("decimals") else "0.00"
+
+            if not units and not expr:
+                for conv in param.findall(".//conversion"):
+                    units = conv.get("units", "")
+                    expr  = conv.get("expr", conv.get("expression", "x"))
+                    fmt   = conv.get("format", "0.00")
+                    break
+
+            if not expr:
+                expr = "x"
 
             if not name and not address:
                 continue
+
+            target = param.get("target", "1")
 
             params.append({
                 "id":          param_id,
@@ -121,15 +209,19 @@ def parse_logger_xml(xml_text: str, source_url: str = "") -> list[dict]:
 
     # Also handle <switch> elements (binary flags)
     for proto_el in protocols:
-        proto_id = proto_el.get("id", "SSM")
+        proto_id = proto_el.get("type", proto_el.get("id", "SSM"))
         for sw in proto_el.findall(".//switch"):
             sw_id   = sw.get("id", "")
-            name    = sw.get("name", "")
+            name    = sw.get("name", sw_id)
+            offset  = sw.get("offset", "")
             addr_el = sw.find("address")
             address = ""
-            if addr_el is not None:
+
+            if offset:
+                address = _normalise_offset(offset)
+            elif addr_el is not None:
                 raw_addr = (addr_el.text or "").strip()
-                address = hex(int(raw_addr, 16)).upper() if raw_addr.startswith("0x") else raw_addr
+                address = _normalise_offset(raw_addr) if raw_addr else ""
 
             if name and address:
                 params.append({
@@ -150,11 +242,22 @@ def parse_logger_xml(xml_text: str, source_url: str = "") -> list[dict]:
 
 
 def fetch_and_parse_all() -> list[dict]:
-    """Fetch all configured RomRaider XML URLs and return merged parameter list."""
+    """Fetch all configured RomRaider XML URLs and return merged parameter list.
+
+    Tries raw.githubusercontent.com first, then falls back to the GitHub API
+    if the raw CDN is unreachable (common on restricted server environments).
+    """
     all_params = []
     seen_ids = set()
-    for url in _ROMRAIDER_URLS:
+
+    for idx, url in enumerate(_ROMRAIDER_URLS):
         xml_text = fetch_logger_xml(url)
+
+        # Fallback to GitHub API if raw fetch failed
+        if not xml_text and idx < len(_ROMRAIDER_API_URLS):
+            print("[INFO] Trying GitHub API fallback...")
+            xml_text = _fetch_via_api(_ROMRAIDER_API_URLS[idx])
+
         if not xml_text:
             continue
         params = parse_logger_xml(xml_text, source_url=url)
