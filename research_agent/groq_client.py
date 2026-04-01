@@ -200,15 +200,32 @@ class GroqClient:
 
             try:
                 self._per_model_rate_limit(idx)
-                response = self._client.chat.completions.create(
-                    model=catalog[idx]["id"],
-                    max_tokens=max_tokens if max_tokens is not None else config.MAX_TOKENS,
-                    temperature=config.TEMPERATURE,
-                    messages=[
-                        {"role": "system", "content": system},
-                        {"role": "user",   "content": user},
-                    ],
-                )
+
+                # Retry on transient connection errors with backoff
+                last_err = None
+                for attempt in range(4):
+                    try:
+                        response = self._client.chat.completions.create(
+                            model=catalog[idx]["id"],
+                            max_tokens=max_tokens if max_tokens is not None else config.MAX_TOKENS,
+                            temperature=config.TEMPERATURE,
+                            messages=[
+                                {"role": "system", "content": system},
+                                {"role": "user",   "content": user},
+                            ],
+                        )
+                        last_err = None
+                        break
+                    except (groq_sdk.APIConnectionError, groq_sdk.APITimeoutError) as conn_err:
+                        last_err = conn_err
+                        wait = 2 ** attempt  # 1, 2, 4, 8 seconds
+                        import ui
+                        ui.log("rate", f"Connection error (attempt {attempt + 1}/4) — retrying in {wait}s")
+                        time.sleep(wait)
+
+                if last_err is not None:
+                    raise last_err
+
                 # Record cascade if we moved to a different model.
                 if idx != self._active_idx:
                     m = catalog[idx]
