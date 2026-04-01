@@ -1,7 +1,9 @@
 import os
+from dotenv import load_dotenv
 
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "GROQ_API_KEY_REMOVED")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 # ── Model catalogue ────────────────────────────────────────────────────────────
 # rank 1 = best quality.  Models are tried in rank order when cascading on 429s.
